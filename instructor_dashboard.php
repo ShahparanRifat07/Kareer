@@ -19,7 +19,7 @@ session_start()
 </head>
 
 <body>
-    <?php include "utility/navbar.php"?>
+    <?php include "utility/instructor_navbar.php"?>
     <h1><?php echo $_SESSION["USERID"] ?></h1>
     <?php include "utility/footer.php"?>
     <!-- MDB -->

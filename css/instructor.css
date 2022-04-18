@@ -1,0 +1,17 @@
+.instructor_form{
+    margin: 20px 40px;
+}
+.insform-header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    /* padding: 5px; */
+    /* border: 1px solid red; */
+    /* border-radius: 10px; */
+}
+.insform-header h2{
+    border: 3px solid gray;
+    border-radius: 10px;
+    padding: 5px 20px;
+}
