@@ -1,0 +1,37 @@
+.form-section {
+    margin-top: 10vh;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10vh;
+}
+
+.warning {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    background: #E53935;
+    margin: 10px 0px;
+    border-radius: 5px;
+    color: #fff;
+}
+.warning p{
+    margin-top: 2vh;
+}
+.succesmsg{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    background: #43A047;
+    margin: 10px 0px;
+    border-radius: 5px;
+    color: #fff; 
+}
+.succesmsg p{
+    margin-top: 2vh;
+}
+
+.card {
+    padding: 15px;
+}

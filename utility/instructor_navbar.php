@@ -4,6 +4,7 @@ $rootDir = realpath($_SERVER["DOCUMENT_ROOT"]);
 require_once("$rootDir/Kareer/models/database.php");
 require_once("$rootDir/Kareer/models/user.php");
 require_once("$rootDir/Kareer/models/learnerProflie.php");
+require_once("$rootDir/Kareer/models/instructor.php");
 // require_once("$rootDir/Kareer/instructor/dashboard.php");
 
 if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
@@ -66,39 +67,13 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                 <h3>Kareer</h3>
             </a>
             <!-- Left links -->
-            <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Categories</a>
-                </li>
-            </ul> -->
-            <!-- Left links -->
-            <ul class="navbar-nav">
-                <!-- Dropdown -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                        Categories
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li>
-                            <a class="dropdown-item" href="#">Action</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Another action</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </li>
-                    </ul>
+                    <a class="nav-link" href="create_course.php">Create Course</a>
                 </li>
             </ul>
-            <div class="col-md-8 ms-3">
-                <form class="d-flex input-group w-auto my-auto ">
-                    <input autocomplete="off" type="search" class="form-control rounded" placeholder="Search" aria-describedby="search-addon" />
-                    <span class="input-group-text border-0" id="search-addon">
-                        <i class="fas fa-search"></i>
-                    </span>
-                </form>
-            </div>
+            <!-- Left links -->
+
         </div>
         <!-- Collapsible wrapper -->
 
@@ -112,13 +87,11 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
         </form> -->
 
         <!-- Right elements -->
-
-
-
         <div class="d-flex align-items-center">
             <!-- Icon -->
-
-
+            <!-- <a class="text-reset me-3" href="#">
+                <i class="fas fa-shopping-cart"></i>
+            </a> -->
 
             <!-- Notifications -->
             <!-- <div class="dropdown">
@@ -144,53 +117,17 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
             <?php
             if (isset($_SESSION['LOGGEDIN'])) {
             ?>
+                <a class="text-reset me-3" href="index.php">
+                    Student
+                </a>
 
-                <?php
-                if ($is_instructor == true) {
-                ?>
-                    <a class="text-reset me-3" href="instructor_dashboard.php">
-                        Instructor
-                    </a>
-                <?php
-                }
-                ?>
+
                 <!-- Avatar -->
                 <div class="dropdown">
                     <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                         <img src="<?php echo $profile_pic ?>" class="rounded-circle" height="25" alt="Profile Pic" loading="lazy" />
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
-
-                        <li>
-                            <div id="profile-head">
-                                <p><strong><?php echo $first_name . " " . $last_name ?></strong></p>
-                                <p><span><?php echo $email ?></p>
-                            </div>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">My Courses</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Wishlist</a>
-                        </li>
-                        <hr>
-                        <?php
-                        if ($is_instructor == false) {
-                        ?>
-                            <li>
-                                <a class="dropdown-item" href="become_instructor.php">Become an Instructor</a>
-                            </li>
-                            <hr>
-                        <?php
-                        } else {
-                        ?>
-                            <li>
-                                <a class="dropdown-item" href="instructor_dashboard.php">Instructor Dashboard</a>
-                            </li>
-                            <hr>
-                        <?php
-                        }
-                        ?>
                         <li>
                             <a class="dropdown-item" href="#">Public Profile</a>
                         </li>
@@ -198,9 +135,6 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                             <a class="dropdown-item" href="#">Edit Profile</a>
                         </li>
                         <hr>
-                        <li>
-                            <a class="dropdown-item" href="#">Purchase history</a>
-                        </li>
                         <li>
                             <a class="dropdown-item" href="#">Settings</a>
                         </li>
