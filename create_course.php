@@ -2,14 +2,16 @@
 
 require_once("models/database.php");
 require_once("models/user.php");
-require_once("models/Course.php");
+require_once("models/course.php");
+require_once("models/category.php");
 
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // $course = new Course();
-    // $_POST['id'] = $_SESSION['USERID'];
-    // echo $course->createCourse($_POST);
+    $course = new Course();
+    $_POST['id'] = $_SESSION['USERID'];
+    $course->createCourse($_POST,$_FILES);
+    
 }
 
 ?>
@@ -32,10 +34,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.11.0/mdb.min.css" rel="stylesheet" />
     <!-- <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> -->
 
+    <style>
+        .dropdown-menu {
+            max-height: 280px;
+            overflow-y: auto;
+            /* border: 1px solid red; */
+        }
+
+        .select {
+            height: 30px;
+            /* border: 1px solid red; */
+            text-align: center;
+            border-radius: 5px;
+        }
+    </style>
+
 </head>
 
 <body>
     <?php include "utility/instructor_navbar.php" ?>
+
+
 
     <div class="insform-header ">
         <h2 class="text-dark">Coures Creation</h2>
@@ -43,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <div class="instructor_form">
         <div class="card p-4">
-            <form method="POST" action="">
+            <form method="POST" action="" enctype="multipart/form-data">
 
                 <!-- Text input -->
                 <div class="form-outline mb-4">
@@ -53,31 +72,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <!-- Text input -->
                 <div class="form-outline mb-4">
-                    <textarea name="Description" type="text" id="form6Example3" class="form-control" rows="4"></textarea>
+                    <textarea name="description" type="text" id="form6Example3" class="form-control" rows="4"></textarea>
                     <label class="form-label" for="form6Example3">Description</label>
                 </div>
 
-                <!-- Message input -->
-                <!-- <div class="form-outline mb-4"> -->
-                    <div class="dropdown ">
-                        <button class="btn btn-primary dropdown-toggle w-100" type="button" id="dropdownMenuButton" data-mdb-toggle="dropdown" aria-expanded="false">
-                            Category
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </div>
-                <!-- </div> -->
+                <div class="mb-4">
+                    <select class="select w-100" name="category">
+                        <div class="selectOption">
+                            <option selected disabled>Choose Category</option>
 
-                <hr>
+                            <?php
+                            // $cat = new Category();
+                            // $result = $cat->getAllCategories();
 
-                
+                            $db = new Database();
+                            $con = $db->connect_db();
+
+                            $query = "SELECT * FROM category";
+                            $result = mysqli_query($con, $query);
+                            // echo $result;
+                            if (mysqli_num_rows($result) > 0) {
+
+                                while ($row = $result->fetch_assoc()) {
+                            ?>
+                                    <!-- <li class="dropdown-item" value=<?php echo $row['name'] ?> name="category"><?php echo $row['name'] ?></li> -->
+                                    <option value=<?php echo $row['id'] ?>><?php echo $row['name'] ?></option>
+                            <?php
+                                }
+                            }
+                            ?>
+                        </div>
+                    </select>
+                </div>
+
+
+
+                <div class="form-outline mb-4">
+                    <input name="price" type="number" id="form6Example3" class="form-control" />
+                    <label class="form-label" for="form6Example3">Price*</label>
+                </div>
+
+                <label class="form-label" for="customFile">Upload Course Thumbnail</label>
+                <input name="picture" type="file" class="form-control"  id="customFile" />
+
                 <hr>
 
                 <!-- Submit button -->
-                <button type="submit" class="btn btn-dark btn-block mb-4">Submit</button>
+                <button name="submit" type="submit" class="btn btn-dark btn-block mb-4">Save to Draft</button>
             </form>
         </div>
     </div>
