@@ -62,7 +62,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
         <!-- Collapsible wrapper -->
         <div class="collapse navbar-collapse " id="navbarSupportedContent">
             <!-- Navbar brand -->
-            <a class="navbar-brand mt-2 mt-lg-0" href="#">
+            <a href="instructor_dashboard.php" class="navbar-brand mt-2 mt-lg-0" href="#">
                 <!-- <img src="img/logo.svg" height="15" alt="MDB Logo" loading="lazy" /> -->
                 <h3>Kareer</h3>
             </a>
@@ -134,6 +134,17 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                         <li>
                             <a class="dropdown-item" href="#">Edit Profile</a>
                         </li>
+                        <hr>
+                        <li>
+                            <a class="dropdown-item" href="#">Draft Courses</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">Published Courses</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">All Courses</a>
+                        </li>
+                        <hr>
                         <hr>
                         <li>
                             <a class="dropdown-item" href="#">Settings</a>
