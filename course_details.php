@@ -13,6 +13,26 @@ $db = new Database();
 $con = $db->connect_db();
 $id = $_SESSION['USERID'];
 $course_id = $_GET['id'];
+$cor = new Course();
+$course = $cor->findCourseById($course_id);
+$cat = new Category();
+$category = $cat->findCategoryById($course['category_id']);
+$category_name = $category['name'];
+$price = $course['price'];
+$year = date('d/m/Y', strtotime($course['created_time']));
+$active = "No";
+if ($course['is_active'] == 1) {
+    $active = "Yes";
+}
+$status = $cor->findStatus($course);
+$picture = $course['picture'];
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $cor->addSection($_POST,$course_id);
+    
+}
 
 ?>
 
@@ -42,13 +62,20 @@ $course_id = $_GET['id'];
         body {
             background-color: #EEEEEE;
         }
+
         .card {
             margin-top: 20px;
             margin-bottom: 20px;
         }
 
-        .container .card:nth-of-type(1)> button{
+        .container .card:nth-of-type(1)>a {
             margin: 5px;
+        }
+
+        .container>.card:nth-of-type(1)>div:nth-of-type(3) {
+            display: flex;
+            margin-bottom: 10px;
+            justify-content: flex-end;
         }
     </style>
 
@@ -59,14 +86,71 @@ $course_id = $_GET['id'];
     <?php include "utility/instructor_navbar.php" ?>
 
     <div class="container">
+
         <div class="card">
-            
+            <div>
+                <h3><?php echo $course['title']  ?></h3>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <p> <strong>Description:</strong> <?php echo $course['description'] ?></p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Category:</strong> <?php echo $category_name ?></p>
+                    <p><strong>Price:</strong> <?php echo $price ?>$</p>
+                    <p><strong>Created Time:</strong> <?php echo $year ?></p>
+                    <p><strong>Active:</strong> <?php echo $active ?></p>
+                    <p><strong>Status:</strong> <?php echo $status ?></p>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <img src="<?php echo $picture ?>" alt="">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#exampleModal">
+                    Launch demo modal
+                </button>
+
+                <!-- Modal -->
+                <div class="modal top fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="false" data-mdb-keyboard="true">
+                    <div class="modal-dialog modal-lg  modal-dialog-centered">
+
+                        <div class="modal-content">
+                            <form method="POST" action="">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Add Sections</h5>
+                                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="form-outline mb-4">
+                                        <input type="text" id="form1Example1" class="form-control" />
+                                        <label class="form-label" for="form1Example1">Section Name</label>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
+                                        Close
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-3">
                 <div class="card">
-                    <button class="btn btn-dark" type="button">Add Section</button>
-                    <button class="btn btn-dark" type="button">Add Assignment</button>
+                    <a href="add_section.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">Add Section</a>
+                    <a href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">Add Assignment</a>
                 </div>
             </div>
             <div class="col-md-9">

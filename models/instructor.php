@@ -80,15 +80,13 @@ class Instructor
     
     $query = "SELECT * FROM instructor_profile WHERE user_id='$user_id'";
     $result = mysqli_query($con, $query);
-    $error ="";
 
     if (mysqli_num_rows($result) == 1) {
         $row = mysqli_fetch_array($result);
         // $ins_id = $row['id'];
         return $row;
     }else{
-        $error = "No instructor found";
-        return $error;
+        return null;
     }
   }
 }

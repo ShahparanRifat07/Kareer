@@ -2,10 +2,17 @@
 
 require_once("models/database.php");
 require_once("models/user.php");
+require_once("models/instructor.php");
 require_once("models/course.php");
 require_once("models/category.php");
 
 session_start();
+
+$id = $_SESSION['USERID'];
+$ins = new Instructor();
+if($ins->findInstructor($id) == null){
+    header("location: no_access.php");
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $course = new Course();
