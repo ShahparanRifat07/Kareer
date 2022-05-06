@@ -13,6 +13,11 @@ $db = new Database();
 $con = $db->connect_db();
 $id = $_SESSION['USERID'];
 
+$inst = new Instructor();
+if($inst->findInstructor($id) == null){
+    header("location: no_access.php");
+}
+
 if (isset($_GET['view'])) {
     // echo $_GET['view'];
     echo "hello";

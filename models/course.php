@@ -73,23 +73,23 @@ class Course
                 if (mysqli_num_rows($result) == 1) {
                     $row = mysqli_fetch_array($result);
                     $ins_id = $row['id'];
-                }else{
+                } else {
                     $error = "Something went worng";
                     return $error;
                 }
-                
+
 
                 $targetDir = "uploads/";
                 $fileName = basename($picture["name"]);
                 $filename_without_ext = pathinfo($fileName, PATHINFO_FILENAME);
-                $uniquesavename=time().uniqid(rand());
-                $targetFilePath = $targetDir . $filename_without_ext.$ins_id.$title.$uniquesavename.".jpg";
+                $uniquesavename = time() . uniqid(rand());
+                $targetFilePath = $targetDir . $filename_without_ext . $ins_id . $title . $uniquesavename . ".jpg";
 
                 // echo $fileName;
 
-                $query = "INSERT INTO course (instructor_id,title,description,categoty_id,price,picture)
+                $query = "INSERT INTO course (instructor_id,title,description,category_id,price,picture)
                 VALUES ('$ins_id','$title','$description','$category','$price','$targetFilePath')";
-                
+
                 if ($db->save($query) == true) {
                     move_uploaded_file($picture["tmp_name"], $targetFilePath);
                 } else {
@@ -105,5 +105,42 @@ class Course
             echo $error;
             return $error;
         }
+    }
+
+
+    public function findCourseById($id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT * FROM course WHERE id='$id'";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_array($result);
+            return $row;
+        } else {
+            return null;
+        }
+    }
+
+    public function findStatus($course){
+        $status = "";
+
+        if($course['is_drafted'] == 1){
+            $status = "Drafted";
+        }
+        if($course['is_submitted'] == 1){
+            $status = "Submitted";
+        }
+        if($course['is_approved'] == 1){
+            $status = "Approved";
+        }
+
+        return $status;
+    }
+
+    public function addSection($data, $course_id){
+        
     }
 }
