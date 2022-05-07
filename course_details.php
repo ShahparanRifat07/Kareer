@@ -30,8 +30,7 @@ $picture = $course['picture'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $cor->addSection($_POST,$course_id);
-    
+    $cor->addSection($_POST, $course_id);
 }
 
 ?>
@@ -60,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         body {
-            background-color: #EEEEEE;
+            background-color: #fcde67;
         }
 
         .card {
@@ -68,14 +67,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             margin-bottom: 20px;
         }
 
-        .container .card:nth-of-type(1)>a {
-            margin: 5px;
+        #headCard {
+            background-color: black;
+            padding: 20px;
+            color: white;
+        }
+
+        #addSection1 {
+            margin-bottom: 5px;
+        }
+
+        #addSection2 {
+            margin-bottom: 5px;
+        }
+
+        #addSection3 {
+            margin-bottom: 5px;
         }
 
         .container>.card:nth-of-type(1)>div:nth-of-type(3) {
             display: flex;
-            margin-bottom: 10px;
+            /* margin-bottom: 10px; */
             justify-content: flex-end;
+        }
+
+        .scectionParts {
+            margin-bottom: 20px;
+        }
+
+        .scectionParts>div:nth-of-type(1) {
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 
@@ -87,10 +109,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <div class="container">
 
-        <div class="card">
+        <div id="headCard" class="card">
             <div>
                 <h3><?php echo $course['title']  ?></h3>
+
             </div>
+            <hr>
 
             <div class="row">
                 <div class="col-md-6">
@@ -110,52 +134,106 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
             </div>
             <div>
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#exampleModal">
-                    Launch demo modal
-                </button>
-
-                <!-- Modal -->
-                <div class="modal top fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="false" data-mdb-keyboard="true">
-                    <div class="modal-dialog modal-lg  modal-dialog-centered">
-
-                        <div class="modal-content">
-                            <form method="POST" action="">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Add Sections</h5>
-                                    <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-
-                                    <div class="form-outline mb-4">
-                                        <input type="text" id="form1Example1" class="form-control" />
-                                        <label class="form-label" for="form1Example1">Section Name</label>
-                                    </div>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
-                                        Close
-                                    </button>
-                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                </div>
-                            </form>
-                        </div>
-
-                    </div>
-                </div>
+                <button class="btn btn-light">Edit Course</button>
             </div>
         </div>
         <div class="row">
             <div class="col-md-3">
                 <div class="card">
-                    <a href="add_section.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">Add Section</a>
-                    <a href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">Add Assignment</a>
+                    <!-- Button trigger modal -->
+                    <button id=addSection1 type="button" class="btn btn-dark" data-mdb-toggle="modal" data-mdb-target="#exampleModal">
+                        Add Section
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal top fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-mdb-backdrop="false" data-mdb-keyboard="true">
+                        <div class="modal-dialog modal-lg  modal-dialog-centered">
+
+                            <div class="modal-content">
+                                <form method="POST" action="">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Add Sections</h5>
+                                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <div class="form-outline mb-4">
+                                            <input name="name" type="text" id="form1Example1" class="form-control bg-light" />
+                                            <label class="form-label" for="form1Example1">Section Name</label>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-dark" data-mdb-dismiss="modal">
+                                            Close
+                                        </button>
+                                        <button name="submit" type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                    <a id=addSection2 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View all students</a>
+                    <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View Course Aanalytics</a>
                 </div>
             </div>
             <div class="col-md-9">
                 <div class="card">
-                    world
+                    <?php
+
+                    $query = "SELECT * FROM section WHERE course_id = '$course_id'";
+                    $result = $con->query($query);
+                    if ($result->num_rows > 0) {
+                        // output data of each row
+                        while ($row = $result->fetch_assoc()) {
+                    ?>
+
+                            <div class="scectionParts">
+                                <div>
+                                    <h4><?php echo $row['name'] ?></h4>
+                                    <a href="add_content.php?course_id=<?php echo $row['course_id'] ?>&section_id=<?php echo $row['id'] ?>" class="btn btn-dark">Add Content</a>
+                                </div>
+                                <hr>
+                                <div>
+                                    <ol class="list-group list-group-light list-group-numbered">
+                                        <?php
+                                        $section_id = $row['id'];
+                                        $query3 = "SELECT * FROM content WHERE section_id = '$section_id'";
+                                        $result3 = $con->query($query3);
+                                        if ($result3->num_rows > 0) {
+                                            // output data of each row
+                                            while ($row3 = $result3->fetch_assoc()) {
+                                        ?>
+
+                                                <li class="list-group-item ">
+                                                   <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?></a> 
+                                                </li>
+
+                                        <?php
+                                            }
+                                        } else {
+                                            echo "no content";
+                                        }
+
+                                        ?>
+                                    </ol>
+                                </div>
+
+                            </div>
+
+                        <?php
+                        }
+                    } else {
+                        ?>
+                        <div class="card">
+                            <h4 class="card-title">No Section Found</h4>
+                        </div>
+                    <?php
+                    }
+                    ?>
+
+
                 </div>
             </div>
         </div>

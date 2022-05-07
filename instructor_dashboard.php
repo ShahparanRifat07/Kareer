@@ -43,14 +43,14 @@ if (isset($_GET['view'])) {
 
     <style>
         body {
-            background-color: #EEEEEE;
+            background-color: #fcde67;
         }
 
         .container>.card:nth-of-type(1) {
             margin-top: 30px;
             margin-bottom: 30px;
             padding: 25px;
-            border-top: 3px solid black;
+            border-top: 3px solid white;
         }
 
         .container>.card:nth-of-type(1) h4 {
@@ -70,13 +70,26 @@ if (isset($_GET['view'])) {
 
         .container>.card:nth-of-type(1)>.row .card .card-body {
             /* border: 1px solid red; */
+            /* height: 110px; */
             padding: 10px;
+        }
+        .container>.card:nth-of-type(1)>.row .card .card-body h6{
+            /* border: 1px solid red; */
+            font-weight: 400;
+            margin-top: 0;
+        }
+        .container>.card:nth-of-type(1)>.row .card .card-body p{
+            /* border: 1px solid red; */
+            font-weight: 200;
+            font-size: smaller;
+            margin: 0;
         }
 
         .container>.card:nth-of-type(1)>.row .card .card-body a {
             /* border: 1px solid red; */
             display: flex;
             justify-content: center;
+            margin-top: 10px;
         }
 
 
@@ -134,10 +147,10 @@ if (isset($_GET['view'])) {
 
     <div class="container">
 
-        <div class="card">
+        <div class="card bg-dark">
             <div>
-                <h4 class="card-title">Draft Courses</h4>
-                <button class="btn btn-dark">View all</button>
+                <h4 class="card-title text-light">Draft Courses</h4>
+                <button class="btn btn-light">View all</button>
             </div>
 
             <div class="row">
@@ -160,10 +173,10 @@ if (isset($_GET['view'])) {
                         <!-- <p><?php echo $ins_name ?></p> -->
 
                         <div class="col-4">
-                            <div class="card">
+                            <div class="card ">
                                 <img src="<?php echo $row['picture'] ?>" class="card-img-top" height="100px" alt="Fissure in Sandstone" />
                                 <div class="card-body">
-                                    <h5 class="card-title"><?php echo $row["title"] ?></h5>
+                                    <h6 class="card-title"><?php echo $row["title"] ?></h6>
                                     <p class="card-text"><?php echo $instructor['instructor_name'] ?></p>
                                     <p class="card-text">Price: <?php echo $row["price"] ?>$</p>
 

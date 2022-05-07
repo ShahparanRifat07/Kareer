@@ -46,6 +46,20 @@ class Course
         }
     }
 
+    function extractYoutubeCode($YoutubeCode)
+    {
+        $url_parsed_arr = parse_url($YoutubeCode);
+        if ($url_parsed_arr['host'] == "www.youtube.com" || $url_parsed_arr['host'] == "youtu.be") {
+            preg_match('#(\.be/|/embed/|/v/|/watch\?v=)([A-Za-z0-9_-]{5,11})#', $YoutubeCode, $matches);
+            if (isset($matches[2]) && $matches[2] != '') {
+                $YoutubeCode = $matches[2];
+                return $YoutubeCode;
+            }
+        } else {
+            return null;
+        }
+    }
+
 
     function createCourse($data, $file)
     {
@@ -124,23 +138,86 @@ class Course
         }
     }
 
-    public function findStatus($course){
+    public function findStatus($course)
+    {
         $status = "";
 
-        if($course['is_drafted'] == 1){
+        if ($course['is_drafted'] == 1) {
             $status = "Drafted";
         }
-        if($course['is_submitted'] == 1){
+        if ($course['is_submitted'] == 1) {
             $status = "Submitted";
         }
-        if($course['is_approved'] == 1){
+        if ($course['is_approved'] == 1) {
             $status = "Approved";
         }
 
         return $status;
     }
 
-    public function addSection($data, $course_id){
-        
+    public function addSection($data, $course_id)
+    {
+        $course_name = $data['name'];
+
+        if (isset($data["submit"])) {
+
+            $query = "INSERT into section (course_id,name) values('$course_id','$course_name')";
+            $db = new Database();
+            $db->save($query);
+            header("Refresh:0");
+        }
+    }
+
+    public function isCourseByInstructorId($id, $course_id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT * FROM course WHERE id='$course_id' AND instructor_id='$id'";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_array($result);
+            if ($row['id'] == $course_id) {
+                return true;
+                // echo $row['id'] . "    ".$course_id;
+            } else {
+                // echo "false";
+                return false;
+            }
+        } else {
+
+            // echo "null";
+            return null;
+        }
+    }
+
+
+    public function addContentToSection($data, $section_id,$course_id)
+    {
+
+        if (isset($data["submit"])) {
+            $error = "";
+            $title = $data['title'];
+            $description = $data['description'];
+            $url = $this->extractYoutubeCode($data['url']);
+            $preview = 1;
+            if (!isset($data['preview'])) {
+                $preview = 0;
+            }
+            if ($url == null) {
+                $error = "Enter a valid youtube link";
+                return $error;
+            } else {
+
+                $query = "INSERT into content (section_id,name,description,url,is_preview) 
+                values('$section_id','$title','$description','$url','$preview')";
+                $db = new Database();
+                $db->save($query);
+                
+            }
+            // echo $title . "-------" . $description . " ----- " . $url . "-------" . $preview;
+
+        }
     }
 }
