@@ -7,10 +7,11 @@ require_once("$rootDir/Kareer/models/learnerProflie.php");
 require_once("models/category.php");
 // require_once("$rootDir/Kareer/instructor/dashboard.php");
 
-$db1 = new Database();
-$con = $db1->connect_db();
+
 
 if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
+    $db1 = new Database();
+    $con = $db1->connect_db();
 
     $id = $_SESSION["USERID"];
     $first_name = "";
@@ -160,6 +161,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                 if ($is_admin == true) {
                 ?>
                     <a class="text-reset me-3" href="admin_dashboard.php">
+                        <span><i class="fa-solid fa-user"></i></span>
                         Admin
                     </a>
                 <?php
@@ -170,6 +172,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                 if ($is_employer == true) {
                 ?>
                     <a class="text-reset me-3" href="employer_dashboard.php">
+                        <span><i class="fa-brands fa-black-tie"></i></span>
                         Employer
                     </a>
                 <?php
@@ -180,6 +183,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                 if ($is_instructor == true) {
                 ?>
                     <a class="text-reset me-3" href="instructor_dashboard.php">
+                        <span><i class="fa-solid fa-book-open-reader"></i></span>
                         Instructor
                     </a>
                 <?php

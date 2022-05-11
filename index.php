@@ -30,58 +30,35 @@ session_start()
 
     <div class="container">
 
-        <div class="card bg-dark mt-3 mb-3">
-            <!-- Carousel wrapper -->
-            <div id="carouselDarkVariant" class="carousel slide carousel-fade carousel-dark" data-mdb-ride="carousel">
-                <!-- Indicators -->
-                <div class="carousel-indicators">
-                    <button data-mdb-target="#carouselDarkVariant" data-mdb-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button data-mdb-target="#carouselDarkVariant" data-mdb-slide-to="1" aria-label="Slide 1"></button>
-                    <button data-mdb-target="#carouselDarkVariant" data-mdb-slide-to="2" aria-label="Slide 1"></button>
-                </div>
+        <?php include "utility/slider.php" ?>
 
-                <!-- Inner -->
-                <div class="carousel-inner">
-                    <!-- Single item -->
-                    <div class="carousel-item active">
-                        <img height="400px" src="https://imgv3.fotor.com/images/homepage-feature-card/Fotor-AI-photo-enhancement-tool.jpg" class="d-block w-100" alt="Motorbike Smoke" />
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>First slide label</h5>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                        </div>
-                    </div>
-
-                    <!-- Single item -->
-                    <div class="carousel-item">
-                        <img height="400px" src="https://www.befunky.com/images/prismic/2aa87dc8-3720-4385-9cc2-b8f9be5aac1d_landing-photo-to-art-img-4-before.png?auto=webp&format=jpg&width=863" class="d-block w-100" alt="Mountaintop" />
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>Second slide label</h5>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                        </div>
-                    </div>
-
-                    <!-- Single item -->
-                    <div class="carousel-item">
-                        <img height="400px" src="https://twilio-cms-prod.s3.amazonaws.com/original_images/django-dark.png" class="d-block w-100" alt="Woman Reading a Book" />
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5>Third slide label</h5>
-                            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Inner -->
-
-                <!-- Controls -->
-                <button class="carousel-control-prev" type="button" data-mdb-target="#carouselDarkVariant" data-mdb-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-mdb-target="#carouselDarkVariant" data-mdb-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+        <div id="section2">
+            <div>
+                <h2>Let's start learning, Rifat</h2>
+                <a href="" class="btn btn-dark">My learning</a>
             </div>
-            <!-- Carousel wrapper -->
+            <div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                <img src="https://www.softwaretestinghelp.com/wp-content/qa/uploads/2020/12/Python-Programming.png" class="img-fluid" />
+                                <a href="#!">
+                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                <a href="#!" class="btn btn-primary">Button</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">.col-md-4</div>
+                    <div class="col-md-3">.col-md-4</div>
+                    <div class="col-md-3">.col-md-4</div>
+                </div>
+            </div>
         </div>
 
     </div>

@@ -211,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <?php
                     if($is_submitted == 0 && $is_approved == 0){
                     ?>
-                    <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-primary" type="button">Submit Course for publish</a>
+                    <a id=addSection3 href="course_submit.php?course_id=<?php echo $course_id ?>" class="btn btn-primary" type="button">Submit Course for publish</a>
                     <?php
                     }
                     ?>

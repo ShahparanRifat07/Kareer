@@ -75,7 +75,7 @@ class Course
 
 
 
-            // echo $ins_id."   ". $title ."   ". $description ."  ". $category . "   ". $price . "  ". $targetFilePath;
+
 
             if (isset($data["submit"])) {
                 $db = new Database();
@@ -101,16 +101,23 @@ class Course
 
                 // echo $fileName;
 
-                $query = "INSERT INTO course (instructor_id,title,description,category_id,price,picture)
-                VALUES ('$ins_id','$title','$description','$category','$price','$targetFilePath')";
+                // echo $ins_id."   ". $title ."   ". $description ."  ". $category . "   ". $price . "  ". $targetFilePath;
 
-                if ($db->save($query) == true) {
-                    move_uploaded_file($picture["tmp_name"], $targetFilePath);
-                } else {
-                    $error = "Something went wrong";
-                    return $error;
+                try {
+                    $query = "INSERT INTO course (instructor_id,title,description,category_id,price,picture)
+                    VALUES ('$ins_id','$title','$description','$category','$price','$targetFilePath')";
+
+                    if ($db->save($query) == true) {
+                        move_uploaded_file($picture["tmp_name"], $targetFilePath);
+                    } else {
+                        $error = "Something went wrong";
+                        return $error;
+                    }
+                    header("location: instructor_dashboard.php");
+                } catch (mysqli_sql_exception $e) {
+                    var_dump($e);
+                    exit;
                 }
-                header("location: instructor_dashboard.php");
             } else {
                 $error = "Something went wrong";
                 return $error;
@@ -193,7 +200,7 @@ class Course
     }
 
 
-    public function addContentToSection($data, $section_id,$course_id)
+    public function addContentToSection($data, $section_id, $course_id)
     {
 
         if (isset($data["submit"])) {
@@ -215,7 +222,6 @@ class Course
                 values('$section_id','$title','$description','$url','$preview','$point')";
                 $db = new Database();
                 $db->save($query);
-                
             }
             // echo $title . "-------" . $description . " ----- " . $url . "-------" . $preview;
 
@@ -223,12 +229,13 @@ class Course
     }
 
 
-    public function approveCourse($id){
+    public function approveCourse($id)
+    {
         $db = new Database();
         $con = $db->connect_db();
         $query = "SELECT * FROM course WHERE id='$id'";
-        $result = mysqli_query($con,$query);
-        if(mysqli_num_rows($result) == 1){
+        $result = mysqli_query($con, $query);
+        if (mysqli_num_rows($result) == 1) {
             $row = mysqli_fetch_assoc($result);
             $created_time = $row['created_time'];
             $query1 = "UPDATE course SET created_time='$created_time', is_approved=1, is_drafted=0,is_submitted=0 WHERE id='$id'";
@@ -237,16 +244,42 @@ class Course
         }
     }
 
-    public function deleteCourse($id){
+    public function unlinkFile($id){
         $db = new Database();
         $con = $db->connect_db();
-        $query = "DELETE FROM course WHERE id='$id'";
-        $result = mysqli_query($con,$query);
+        $query = "SELECT * FROM course WHERE id='$id'";
+        $result = mysqli_query($con, $query);
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
+            unlink($row['picture']);
+        }
+    }
 
-        if($result){
+    public function deleteCourse($id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+        $this->unlinkFile($id);
+        $query = "DELETE FROM course WHERE id='$id'";
+        $result = mysqli_query($con, $query);
+        if ($result) {
             header("location: admin_course.php");
         }
     }
 
+    public function submitCourse($id)
+    {
 
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM course WHERE id='$id'";
+        $result = mysqli_query($con, $query);
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
+            $created_time = $row['created_time'];
+            $query1 = "UPDATE course SET created_time='$created_time',is_submitted=1 WHERE id='$id'";
+            $db->save($query1);
+            header("location: course_details.php?id=" . $id);
+        }
+    }
 }

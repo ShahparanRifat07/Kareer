@@ -9,8 +9,8 @@ require_once("models/category.php");
 session_start();
 
 $id = $_SESSION['USERID'];
-$ins = new Instructor();
-if($ins->findInstructor($id) == null){
+$inst = new Instructor();
+if($inst->findInstructor($id) == null){
     header("location: no_access.php");
 }
 

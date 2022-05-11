@@ -135,7 +135,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                         </li>
                         <hr>
                         <li>
-                            <a class="dropdown-item" href="#">Draft Courses</a>
+                            <a class="dropdown-item" href="#">Dashboard</a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">Published Courses</a>
