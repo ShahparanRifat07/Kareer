@@ -4,7 +4,11 @@ $rootDir = realpath($_SERVER["DOCUMENT_ROOT"]);
 require_once("$rootDir/Kareer/models/database.php");
 require_once("$rootDir/Kareer/models/user.php");
 require_once("$rootDir/Kareer/models/learnerProflie.php");
+require_once("models/category.php");
 // require_once("$rootDir/Kareer/instructor/dashboard.php");
+
+$db1 = new Database();
+$con = $db1->connect_db();
 
 if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
 
@@ -18,9 +22,6 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
     $is_admin = false;
     $profile_pic = "";
 
-
-    $db1 = new Database();
-    $con = $db1->connect_db();
     $query = "SELECT * FROM user WHERE id = '$id'";
     $result = mysqli_query($con, $query);
 
@@ -61,7 +62,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
         <!-- Collapsible wrapper -->
         <div class="collapse navbar-collapse " id="navbarSupportedContent">
             <!-- Navbar brand -->
-            <a class="navbar-brand mt-2 mt-lg-0" href="#">
+            <a class="navbar-brand mt-2 mt-lg-0" href="index.php">
                 <!-- <img src="img/logo.svg" height="15" alt="MDB Logo" loading="lazy" /> -->
                 <h3>Kareer</h3>
             </a>
@@ -79,15 +80,26 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                         Categories
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <li>
-                            <a class="dropdown-item" href="#">Action</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Another action</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </li>
+                        <?php
+                        $cat = new Category();
+                        $cat_result = $cat->getAllCategories();
+                        if ($cat_result->num_rows > 0) {
+                            while ($row = $cat_result->fetch_assoc()) {
+
+                        ?>
+                                <li>
+                                    <a class="dropdown-item" href="course_category.php?category_id=<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a>
+                                </li>
+                            <?php
+                            }
+                        } else {
+                            ?>
+                            <li>
+                                <a href=""></a>
+                            </li>
+                        <?php
+                        }
+                        ?>
                     </ul>
                 </li>
             </ul>
@@ -144,6 +156,25 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
             <?php
             if (isset($_SESSION['LOGGEDIN'])) {
             ?>
+                <?php
+                if ($is_admin == true) {
+                ?>
+                    <a class="text-reset me-3" href="admin_dashboard.php">
+                        Admin
+                    </a>
+                <?php
+                }
+                ?>
+
+                <?php
+                if ($is_employer == true) {
+                ?>
+                    <a class="text-reset me-3" href="employer_dashboard.php">
+                        Employer
+                    </a>
+                <?php
+                }
+                ?>
 
                 <?php
                 if ($is_instructor == true) {
@@ -154,6 +185,8 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                 <?php
                 }
                 ?>
+
+                
                 <!-- Avatar -->
                 <div class="dropdown">
                     <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
@@ -191,6 +224,31 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                         <?php
                         }
                         ?>
+
+
+                        <?php
+                        if ($is_employer == false) {
+                        ?>
+                            <li>
+                                <a class="dropdown-item" href="become_employer.php">Become an Employer</a>
+                            </li>
+                            <hr>
+                        <?php
+                        } else {
+                        ?>
+                            <li>
+                                <a class="dropdown-item" href="employer_dashboard.php">Employer Dashboard</a>
+                            </li>
+                            <hr>
+                        <?php
+                        }
+                        ?>
+
+
+
+
+
+
                         <li>
                             <a class="dropdown-item" href="#">Public Profile</a>
                         </li>

@@ -11,8 +11,16 @@ session_start();
 
 $db = new Database();
 $con = $db->connect_db();
-$id = $_SESSION['USERID'];
-$course_id = $_GET['id'];
+$id = "";
+if(isset($_SESSION['LOGGEDIN'])){
+    $id = $_SESSION['USERID'];
+}
+$course_id = "";
+if(isset($_GET['id'])){
+    $course_id = $_GET['id'];
+}else{
+    header("location: 404.php");
+}
 $cor = new Course();
 $course = $cor->findCourseById($course_id);
 $cat = new Category();
@@ -24,8 +32,18 @@ $active = "No";
 if ($course['is_active'] == 1) {
     $active = "Yes";
 }
+$is_submitted = $course['is_submitted'];
+$is_approved = $course['is_approved'];
 $status = $cor->findStatus($course);
 $picture = $course['picture'];
+
+$course_instructor_id = $course['instructor_id'];
+$ins = new Instructor();
+$instructor_id = "";
+if($ins->findInstructor($id)!=null){
+    $instructor = $ins->findInstructor($id);
+    $instructor_id = $instructor['id'];
+}
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -129,17 +147,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 <div class="col-md-3">
                     <div class="card">
-                        <img src="<?php echo $picture ?>" alt="">
+                        <img height="150px" src="<?php echo $picture ?>" alt="">
                     </div>
                 </div>
             </div>
+            <?php
+            if($course_instructor_id == $instructor_id){
+            ?>
             <div>
                 <button class="btn btn-light">Edit Course</button>
             </div>
+            <?php
+            }
+            ?>
         </div>
         <div class="row">
             <div class="col-md-3">
                 <div class="card">
+                    <?php
+                    if($course_instructor_id == $instructor_id){
+                    ?>
                     <!-- Button trigger modal -->
                     <button id=addSection1 type="button" class="btn btn-dark" data-mdb-toggle="modal" data-mdb-target="#exampleModal">
                         Add Section
@@ -158,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <div class="modal-body">
 
                                         <div class="form-outline mb-4">
-                                            <input name="name" type="text" id="form1Example1" class="form-control bg-light" />
+                                            <input name="name" type="text" id="form1Example1" class="form-control bg-light" required/>
                                             <label class="form-label" for="form1Example1">Section Name</label>
                                         </div>
 
@@ -174,8 +201,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                         </div>
                     </div>
+
+                    <?php
+                    }
+                    ?>
                     <a id=addSection2 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View all students</a>
                     <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View Course Aanalytics</a>
+                    <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View Course Discussion</a>
+                    <?php
+                    if($is_submitted == 0 && $is_approved == 0){
+                    ?>
+                    <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-primary" type="button">Submit Course for publish</a>
+                    <?php
+                    }
+                    ?>
                 </div>
             </div>
             <div class="col-md-9">
@@ -192,7 +231,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="scectionParts">
                                 <div>
                                     <h4><?php echo $row['name'] ?></h4>
+                                    <?php
+                                    if($course_instructor_id == $instructor_id){
+                                    ?>
                                     <a href="add_content.php?course_id=<?php echo $row['course_id'] ?>&section_id=<?php echo $row['id'] ?>" class="btn btn-dark">Add Content</a>
+                                    <?php
+                                    }
+                                    ?>
                                 </div>
                                 <hr>
                                 <div>
@@ -207,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         ?>
 
                                                 <li class="list-group-item ">
-                                                   <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?></a> 
+                                                   <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?> <span class="text-warning">(<?php echo $row3['point'] ?>)</span></a> 
                                                 </li>
 
                                         <?php

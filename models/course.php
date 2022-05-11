@@ -200,6 +200,7 @@ class Course
             $error = "";
             $title = $data['title'];
             $description = $data['description'];
+            $point = $data['point'];
             $url = $this->extractYoutubeCode($data['url']);
             $preview = 1;
             if (!isset($data['preview'])) {
@@ -210,8 +211,8 @@ class Course
                 return $error;
             } else {
 
-                $query = "INSERT into content (section_id,name,description,url,is_preview) 
-                values('$section_id','$title','$description','$url','$preview')";
+                $query = "INSERT into content (section_id,name,description,url,is_preview,point) 
+                values('$section_id','$title','$description','$url','$preview','$point')";
                 $db = new Database();
                 $db->save($query);
                 
@@ -220,4 +221,32 @@ class Course
 
         }
     }
+
+
+    public function approveCourse($id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM course WHERE id='$id'";
+        $result = mysqli_query($con,$query);
+        if(mysqli_num_rows($result) == 1){
+            $row = mysqli_fetch_assoc($result);
+            $created_time = $row['created_time'];
+            $query1 = "UPDATE course SET created_time='$created_time', is_approved=1, is_drafted=0,is_submitted=0 WHERE id='$id'";
+            $db->save($query1);
+            header("location: admin_course.php");
+        }
+    }
+
+    public function deleteCourse($id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "DELETE FROM course WHERE id='$id'";
+        $result = mysqli_query($con,$query);
+
+        if($result){
+            header("location: admin_course.php");
+        }
+    }
+
+
 }

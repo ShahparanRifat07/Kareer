@@ -106,6 +106,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <label class="form-label" for="form4Example3">Content Description</label>
                         </div>
 
+                        <div class="form-outline mb-4">
+                            <input name="point" min="0" max="20" type="number" id="form1Example1" class="form-control" required />
+                            <label class="form-label" for="form1Example1">Point (must be between 0 to 20)*</label>
+                        </div>
+
                         <!-- Password input -->
                         <div class="form-outline mb-4">
                             <input name="url" type="url" id="form1Example2" class="form-control" required />

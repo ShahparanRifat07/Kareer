@@ -8,6 +8,9 @@ require_once("models/course.php");
 
 
 session_start();
+if($_SESSION['LOGGEDIN'] != true){
+    header('location: login.php');
+}
 
 $db = new Database();
 $con = $db->connect_db();
@@ -132,7 +135,7 @@ $content_id = $_GET['content_id'];
 
                 ?>
                     <div class="card">
-                        <iframe height="500px" src="https://www.youtube.com/embed/<?php echo $row['url'] ?>">
+                        <iframe height="500px" src="https://www.youtube.com/embed/<?php echo $row['url'] ?>" allowfullscreen>
                         </iframe>
                         <div class="mt-3">
                             <h3><?php echo $row['name'] ?></h3>

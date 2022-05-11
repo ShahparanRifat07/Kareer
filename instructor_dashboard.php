@@ -9,6 +9,10 @@ require_once("models/course.php");
 
 session_start();
 
+if($_SESSION['LOGGEDIN'] != true){
+    header('location: login.php');
+}
+
 $db = new Database();
 $con = $db->connect_db();
 $id = $_SESSION['USERID'];
@@ -50,7 +54,7 @@ if (isset($_GET['view'])) {
             margin-top: 30px;
             margin-bottom: 30px;
             padding: 25px;
-            border-top: 3px solid white;
+            border-top: 3px solid black;
         }
 
         .container>.card:nth-of-type(1) h4 {
@@ -147,10 +151,10 @@ if (isset($_GET['view'])) {
 
     <div class="container">
 
-        <div class="card bg-dark">
+        <div class="card bg-light">
             <div>
-                <h4 class="card-title text-light">Draft Courses</h4>
-                <button class="btn btn-light">View all</button>
+                <h4 class="card-title text-dark">Draft Courses</h4>
+                <button class="btn btn-dark">View all</button>
             </div>
 
             <div class="row">
