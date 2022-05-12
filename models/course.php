@@ -193,8 +193,6 @@ class Course
                 return false;
             }
         } else {
-
-            // echo "null";
             return null;
         }
     }

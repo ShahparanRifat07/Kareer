@@ -2,23 +2,71 @@
 
 require_once("models/database.php");
 require_once("models/user.php");
+require_once("models/learnerProflie.php");
 require_once("models/instructor.php");
 require_once("models/category.php");
 require_once("models/course.php");
 
 
 session_start();
-if($_SESSION['LOGGEDIN'] != true){
+if ($_SESSION['LOGGEDIN'] != true) {
     header('location: login.php');
+}
+
+$user_id = "";
+if (isset($_SESSION['USERID'])) {
+    $user_id = $_SESSION['USERID'];
 }
 
 $db = new Database();
 $con = $db->connect_db();
 
-$course_id = $_GET['course_id'];
-$section_id = $_GET['section_id'];
-$content_id = $_GET['content_id'];
+$course_id = "";
+if (isset($_GET['course_id'])) {
+    $course_id = $_GET['course_id'];
+} else {
+    header("location: 404.php");
+}
 
+$section_id = "";
+if (isset($_GET['section_id'])) {
+    $section_id = $_GET['section_id'];
+} else {
+    header("location: 404.php");
+}
+
+$content_id = "";
+if (isset($_GET['content_id'])) {
+    $content_id = $_GET['content_id'];
+} else {
+    header("location: 404.php");
+}
+
+
+$learner = new Learner();
+$is_brought = $learner->checkIfCourseBoughtByUser($course_id, $user_id);
+$user = new User();
+$is_admin = $user->checkIFAdmin($user_id);
+
+$ins = new Instructor();
+$instructor = $ins->findInstructor($user_id);
+$course = new Course();
+$is_course_by_instructor = "";
+if (isset($instructor)) {
+    if ($course->isCourseByInstructorId($instructor['id'], $course_id) !== null) {
+        $is_course_by_instructor = $course->isCourseByInstructorId($instructor['id'], $course_id);
+    }
+}
+
+function relax()
+{;
+}
+
+if ($is_brought == true || $is_admin == true || $is_course_by_instructor == true) {
+    relax();
+} else {
+    header("location: no_access.php");
+}
 
 
 // echo $course_id."   ".$section_id."      ".$content_id;
@@ -93,18 +141,13 @@ $content_id = $_GET['content_id'];
                                     ?>
 
                                             <li class="list-group-item bg-dark text-light">
-                                                <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"
-                                                <?php
-                                                if ($row3['id'] == $content_id) {
-                                                ?>
-                                                class="text-warning"
-                                                <?php
-                                                }else {
-                                                ?> 
-                                                class="text-light" 
-                                                <?php
-                                                } 
-                                                ?>>
+                                                <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>" <?php
+                                                                                                                                                                                            if ($row3['id'] == $content_id) {
+                                                                                                                                                                                            ?> class="text-warning" <?php
+                                                                                                                                                                                                                } else {
+                                                                                                                                                                                                                    ?> class="text-light" <?php
+                                                                                                                                                                                                                }
+                                                                                                ?>>
                                                     <?php echo $row3['name'] ?>
                                                 </a>
                                             </li>

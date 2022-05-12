@@ -109,4 +109,33 @@ class User
             return $this->error;
         }
     }
+
+
+    public function findUserByUserId($id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM user WHERE id='$id'";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
+            return $row;
+        }
+    }
+
+    public function checkIFAdmin($id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM user WHERE id='$id'";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
+            if($row['is_admin'] == 1){
+                return true;
+            }
+        }
+    }
 }
