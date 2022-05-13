@@ -6,8 +6,21 @@ require_once("models/instructor.php");
 
 session_start();
 
+if($_SESSION['LOGGEDIN'] != true){
+    header('location: login.php');
+}
+
+$db = new Database();
+$con = $db->connect_db();
+$id = $_SESSION['USERID'];
+
+$ins = new Instructor();
+
+if(($ins->findInstructor($id))!=null){
+    header("location: instructor_dashboard.php");
+}
+
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    $ins = new Instructor();
     $_POST['id'] = $_SESSION['USERID'];
     echo $ins->createInstructor($_POST);
 }
@@ -32,10 +45,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.11.0/mdb.min.css" rel="stylesheet" />
     <!-- <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> -->
 
+    <style>
+        body {
+            background-color: #fcde67;
+        }
+    </style>
 </head>
 
 <body>
-    <?php include "utility/navbar.php" ?>
+    <?php include "utility/just_navbar.php" ?>
 
     <div class="insform-header ">
         <h2 class="text-dark">Become An Instructor</h2>
@@ -53,7 +71,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
                 <!-- Text input -->
                 <div class="form-outline mb-4">
-                    <input name="headline" type="text" id="form6Example3" class="form-control" />
+                    <input name="headline" type="text" id="form6Example3" class="form-control" placeholder="EX: Software Engineer"/>
                     <label class="form-label" for="form6Example3">Headline*</label>
                 </div>
 

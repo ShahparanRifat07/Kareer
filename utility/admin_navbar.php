@@ -1,17 +1,12 @@
 <?php
-$rootDir = realpath($_SERVER["DOCUMENT_ROOT"]);
 
 require_once("models/database.php");
 require_once("models/user.php");
 require_once("models/learnerProflie.php");
-require_once("models/category.php");
+require_once("models/instructor.php");
 // require_once("$rootDir/Kareer/instructor/dashboard.php");
 
-
-
 if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
-    $db1 = new Database();
-    $con = $db1->connect_db();
 
     $id = $_SESSION["USERID"];
     $first_name = "";
@@ -23,6 +18,9 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
     $is_admin = false;
     $profile_pic = "";
 
+
+    $db1 = new Database();
+    $con = $db1->connect_db();
     $query = "SELECT * FROM user WHERE id = '$id'";
     $result = mysqli_query($con, $query);
 
@@ -63,55 +61,18 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
         <!-- Collapsible wrapper -->
         <div class="collapse navbar-collapse " id="navbarSupportedContent">
             <!-- Navbar brand -->
-            <a class="navbar-brand mt-2 mt-lg-0" href="index.php">
+            <a href="admin_dashboard.php" class="navbar-brand mt-2 mt-lg-0" href="#">
                 <!-- <img src="img/logo.svg" height="15" alt="MDB Logo" loading="lazy" /> -->
-                <h3>Kareer</h3>
+                <h3>Kareer Administrator</h3>
             </a>
             <!-- Left links -->
             <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Categories</a>
+                    <a class="nav-link" href="create_course.php">Create Course</a>
                 </li>
             </ul> -->
             <!-- Left links -->
-            <ul class="navbar-nav">
-                <!-- Dropdown -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                        Categories
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <?php
-                        $cat = new Category();
-                        $cat_result = $cat->getAllCategories();
-                        if ($cat_result->num_rows > 0) {
-                            while ($row = $cat_result->fetch_assoc()) {
 
-                        ?>
-                                <li>
-                                    <a class="dropdown-item" href="course_category.php?category_id=<?php echo $row['id'] ?>"><?php echo $row['name'] ?></a>
-                                </li>
-                            <?php
-                            }
-                        } else {
-                            ?>
-                            <li>
-                                <a href=""></a>
-                            </li>
-                        <?php
-                        }
-                        ?>
-                    </ul>
-                </li>
-            </ul>
-            <div class="col-md-8 ms-3">
-                <form class="d-flex input-group w-auto my-auto ">
-                    <input autocomplete="off" type="search" class="form-control rounded" placeholder="Search" aria-describedby="search-addon" />
-                    <span class="input-group-text border-0" id="search-addon">
-                        <i class="fas fa-search"></i>
-                    </span>
-                </form>
-            </div>
         </div>
         <!-- Collapsible wrapper -->
 
@@ -125,13 +86,11 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
         </form> -->
 
         <!-- Right elements -->
-
-
-
         <div class="d-flex align-items-center">
             <!-- Icon -->
-
-
+            <!-- <a class="text-reset me-3" href="#">
+                <i class="fas fa-shopping-cart"></i>
+            </a> -->
 
             <!-- Notifications -->
             <!-- <div class="dropdown">
@@ -157,102 +116,17 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
             <?php
             if (isset($_SESSION['LOGGEDIN'])) {
             ?>
-                <?php
-                if ($is_admin == true) {
-                ?>
-                    <a class="text-reset me-3" href="admin_dashboard.php">
-                        <span><i class="fa-solid fa-user"></i></span>
-                        Admin
-                    </a>
-                <?php
-                }
-                ?>
+                <a class="text-reset me-3" href="index.php">
+                    Homepage
+                </a>
 
-                <?php
-                if ($is_employer == true) {
-                ?>
-                    <a class="text-reset me-3" href="employer_dashboard.php">
-                        <span><i class="fa-brands fa-black-tie"></i></span>
-                        Employer
-                    </a>
-                <?php
-                }
-                ?>
 
-                <?php
-                if ($is_instructor == true) {
-                ?>
-                    <a class="text-reset me-3" href="instructor_dashboard.php">
-                        <span><i class="fa-solid fa-book-open-reader"></i></span>
-                        Instructor
-                    </a>
-                <?php
-                }
-                ?>
-
-                
                 <!-- Avatar -->
                 <div class="dropdown">
                     <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
                         <img src="<?php echo $profile_pic ?>" class="rounded-circle" height="25" alt="Profile Pic" loading="lazy" />
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
-
-                        <li>
-                            <div id="profile-head">
-                                <p><strong><?php echo $first_name . " " . $last_name ?></strong></p>
-                                <p><span><?php echo $email ?></p>
-                            </div>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">My Courses</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Wishlist</a>
-                        </li>
-                        <hr>
-                        <?php
-                        if ($is_instructor == false) {
-                        ?>
-                            <li>
-                                <a class="dropdown-item" href="become_instructor.php">Become an Instructor</a>
-                            </li>
-                            <hr>
-                        <?php
-                        } else {
-                        ?>
-                            <li>
-                                <a class="dropdown-item" href="instructor_dashboard.php">Instructor Dashboard</a>
-                            </li>
-                            <hr>
-                        <?php
-                        }
-                        ?>
-
-
-                        <?php
-                        if ($is_employer == false) {
-                        ?>
-                            <li>
-                                <a class="dropdown-item" href="become_employer.php">Become an Employer</a>
-                            </li>
-                            <hr>
-                        <?php
-                        } else {
-                        ?>
-                            <li>
-                                <a class="dropdown-item" href="employer_dashboard.php">Employer Dashboard</a>
-                            </li>
-                            <hr>
-                        <?php
-                        }
-                        ?>
-
-
-
-
-
-
                         <li>
                             <a class="dropdown-item" href="#">Public Profile</a>
                         </li>
@@ -261,8 +135,16 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                         </li>
                         <hr>
                         <li>
-                            <a class="dropdown-item" href="#">Purchase history</a>
+                            <a class="dropdown-item" href="#">Dashboard</a>
                         </li>
+                        <li>
+                            <a class="dropdown-item" href="#">Published Courses</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">All Courses</a>
+                        </li>
+                        <hr>
+                        <hr>
                         <li>
                             <a class="dropdown-item" href="#">Settings</a>
                         </li>

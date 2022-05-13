@@ -9,8 +9,8 @@ require_once("models/category.php");
 session_start();
 
 $id = $_SESSION['USERID'];
-$ins = new Instructor();
-if($ins->findInstructor($id) == null){
+$inst = new Instructor();
+if($inst->findInstructor($id) == null){
     header("location: no_access.php");
 }
 
@@ -42,6 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> -->
 
     <style>
+        body {
+            background-color: #fcde67;
+        }
+
         .dropdown-menu {
             max-height: 280px;
             overflow-y: auto;
@@ -115,8 +119,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
                 <div class="form-outline mb-4">
-                    <input name="price" type="number" id="form6Example3" class="form-control" />
-                    <label class="form-label" for="form6Example3">Price*</label>
+                    <input name="price" type="number" min="0" id="form6Example3" class="form-control" />
+                    <label class="form-label" for="form6Example3">Price</label>
                 </div>
 
                 <label class="form-label" for="customFile">Upload Course Thumbnail</label>

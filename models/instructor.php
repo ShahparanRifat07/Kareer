@@ -89,4 +89,18 @@ class Instructor
         return null;
     }
   }
+
+  public function findInstructorByInstructorID($id){
+    $db = new Database();
+    $con = $db->connect_db();
+    
+    $query = "SELECT * FROM instructor_profile WHERE id='$id'";
+    $result = mysqli_query($con, $query);
+
+    if (mysqli_num_rows($result) == 1) {
+        $row = mysqli_fetch_array($result);
+        // $ins_id = $row['id'];
+        return $row;
+    }
+  }
 }

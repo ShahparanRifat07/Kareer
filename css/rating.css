@@ -1,0 +1,90 @@
+.modal-rating{
+    background-color: #242832;
+    padding: 20px;
+    color: #FFFFFF;
+    font-family: sans-serif;
+    max-width: 350px;
+    width: 95%;
+    border-radius: 10px;
+  
+    position: relative;
+  }
+  .modal-rating .overlay{
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: #FB7711;
+    border-radius: 10px;
+    transform: translate(-5px, 5px);
+  }
+  
+  
+  .modal-rating i{
+    color: #FB7711;
+    background-color: #26303B;
+    padding: 10px;
+    border-radius: 50%;
+  }
+  
+  .modal-rating h2{
+    font-size: 20px;
+    margin-bottom: 0px;
+  }
+  
+  .modal-rating p{
+    font-size: 13px;
+    color: #a4a9b2;
+  }
+  
+  .modal-rating .rating{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+  }
+  .modal-rating .rating input[type="radio"]{
+    display: none;
+  }
+  .modal-rating .rating label{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1em;
+    height: 1em;
+    padding: 20px;
+    font-size: 20px;
+    margin-top: 25px;
+    
+    color: #a4a9b2;
+    background-color: #26303B;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .modal-rating .rating label:hover{
+    background-color: #7C8897;
+    color: #FFFFFF;
+  }
+  .modal-rating .rating input:checked + label{
+    background-color: #FB7711;
+    color: #FFFFFF;
+  }
+  
+  
+  .modal-rating button[type="submit"]{
+    background-color: #FB7711;
+    color: #FFFFFF;
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 99px;
+    border: 0px;
+    margin-top: 25px;
+    cursor: pointer;
+  }
+  .modal-rating button[type="submit"]:hover{
+    color: #FB7711;
+    background-color: #FFFFFF;
+  }
+  

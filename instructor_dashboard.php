@@ -9,12 +9,17 @@ require_once("models/course.php");
 
 session_start();
 
+if ($_SESSION['LOGGEDIN'] != true) {
+    header('location: login.php');
+}
+
 $db = new Database();
 $con = $db->connect_db();
 $id = $_SESSION['USERID'];
+$cor = new Course();
 
 $inst = new Instructor();
-if($inst->findInstructor($id) == null){
+if ($inst->findInstructor($id) == null) {
     header("location: no_access.php");
 }
 
@@ -43,7 +48,7 @@ if (isset($_GET['view'])) {
 
     <style>
         body {
-            background-color: #EEEEEE;
+            background-color: #fcde67;
         }
 
         .container>.card:nth-of-type(1) {
@@ -70,13 +75,28 @@ if (isset($_GET['view'])) {
 
         .container>.card:nth-of-type(1)>.row .card .card-body {
             /* border: 1px solid red; */
+            /* height: 110px; */
             padding: 10px;
+        }
+
+        .container>.card:nth-of-type(1)>.row .card .card-body h6 {
+            /* border: 1px solid red; */
+            font-weight: 400;
+            margin-top: 0;
+        }
+
+        .container>.card:nth-of-type(1)>.row .card .card-body p {
+            /* border: 1px solid red; */
+            font-weight: 200;
+            font-size: smaller;
+            margin: 0;
         }
 
         .container>.card:nth-of-type(1)>.row .card .card-body a {
             /* border: 1px solid red; */
             display: flex;
             justify-content: center;
+            margin-top: 10px;
         }
 
 
@@ -134,9 +154,9 @@ if (isset($_GET['view'])) {
 
     <div class="container">
 
-        <div class="card">
+        <div class="card bg-light">
             <div>
-                <h4 class="card-title">Draft Courses</h4>
+                <h4 class="card-title text-dark">Draft Courses</h4>
                 <button class="btn btn-dark">View all</button>
             </div>
 
@@ -146,32 +166,34 @@ if (isset($_GET['view'])) {
                 $ins = new Instructor();
                 $instructor = $ins->findInstructor($id);
                 $ins_id = $instructor['id'];
-                $query = "SELECT id, title, price, picture FROM course WHERE instructor_id = '$ins_id' ORDER BY created_time DESC LIMIT 3 ";
+                $query = "SELECT * FROM course WHERE instructor_id = '$ins_id' ORDER BY created_time DESC LIMIT 3 ";
                 $result = $con->query($query);
                 if ($result->num_rows > 0) {
                     // output data of each row
                     while ($row = $result->fetch_assoc()) {
-
+                        $status = $cor->findStatus($row);
+                        if ($status == "Drafted" || $status == "Submitted") {
                 ?>
 
-                        <!-- <p><?php echo $row['title'] ?></p>
+                            <!-- <p><?php echo $row['title'] ?></p>
                         <p><?php echo $row['picture'] ?></p>
                         <p><?php echo $row['price'] ?></p> -->
-                        <!-- <p><?php echo $ins_name ?></p> -->
+                            <!-- <p><?php echo $ins_name ?></p> -->
 
-                        <div class="col-4">
-                            <div class="card">
-                                <img src="<?php echo $row['picture'] ?>" class="card-img-top" height="100px" alt="Fissure in Sandstone" />
-                                <div class="card-body">
-                                    <h5 class="card-title"><?php echo $row["title"] ?></h5>
-                                    <p class="card-text"><?php echo $instructor['instructor_name'] ?></p>
-                                    <p class="card-text">Price: <?php echo $row["price"] ?>$</p>
+                            <div class="col-4">
+                                <div class="card ">
+                                    <img src="<?php echo $row['picture'] ?>" class="card-img-top" height="100px" alt="Fissure in Sandstone" />
+                                    <div class="card-body">
+                                        <h6 class="card-title"><?php echo $row["title"] ?></h6>
+                                        <p class="card-text"><?php echo $instructor['instructor_name'] ?></p>
+                                        <p class="card-text">Price: <?php echo $row["price"] ?>$</p>
 
-                                    <a href="course_details.php?id=<?php echo $row['id'] ?>" class="btn btn-dark btn-sm">View</a>
+                                        <a href="course_details.php?id=<?php echo $row['id'] ?>" class="btn btn-dark btn-sm">View</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php
+                        <?php
+                        } 
                     }
                 } else {
                     ?>

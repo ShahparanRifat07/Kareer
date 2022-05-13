@@ -46,6 +46,20 @@ class Course
         }
     }
 
+    function extractYoutubeCode($YoutubeCode)
+    {
+        $url_parsed_arr = parse_url($YoutubeCode);
+        if ($url_parsed_arr['host'] == "www.youtube.com" || $url_parsed_arr['host'] == "youtu.be") {
+            preg_match('#(\.be/|/embed/|/v/|/watch\?v=)([A-Za-z0-9_-]{5,11})#', $YoutubeCode, $matches);
+            if (isset($matches[2]) && $matches[2] != '') {
+                $YoutubeCode = $matches[2];
+                return $YoutubeCode;
+            }
+        } else {
+            return null;
+        }
+    }
+
 
     function createCourse($data, $file)
     {
@@ -61,7 +75,7 @@ class Course
 
 
 
-            // echo $ins_id."   ". $title ."   ". $description ."  ". $category . "   ". $price . "  ". $targetFilePath;
+
 
             if (isset($data["submit"])) {
                 $db = new Database();
@@ -87,16 +101,23 @@ class Course
 
                 // echo $fileName;
 
-                $query = "INSERT INTO course (instructor_id,title,description,category_id,price,picture)
-                VALUES ('$ins_id','$title','$description','$category','$price','$targetFilePath')";
+                // echo $ins_id."   ". $title ."   ". $description ."  ". $category . "   ". $price . "  ". $targetFilePath;
 
-                if ($db->save($query) == true) {
-                    move_uploaded_file($picture["tmp_name"], $targetFilePath);
-                } else {
-                    $error = "Something went wrong";
-                    return $error;
+                try {
+                    $query = "INSERT INTO course (instructor_id,title,description,category_id,price,picture)
+                    VALUES ('$ins_id','$title','$description','$category','$price','$targetFilePath')";
+
+                    if ($db->save($query) == true) {
+                        move_uploaded_file($picture["tmp_name"], $targetFilePath);
+                    } else {
+                        $error = "Something went wrong";
+                        return $error;
+                    }
+                    header("location: instructor_dashboard.php");
+                } catch (mysqli_sql_exception $e) {
+                    var_dump($e);
+                    exit;
                 }
-                header("location: instructor_dashboard.php");
             } else {
                 $error = "Something went wrong";
                 return $error;
@@ -124,23 +145,162 @@ class Course
         }
     }
 
-    public function findStatus($course){
+    public function findStatus($course)
+    {
         $status = "";
 
-        if($course['is_drafted'] == 1){
+        if ($course['is_drafted'] == 1) {
             $status = "Drafted";
         }
-        if($course['is_submitted'] == 1){
+        if ($course['is_submitted'] == 1) {
             $status = "Submitted";
         }
-        if($course['is_approved'] == 1){
+        if ($course['is_approved'] == 1) {
             $status = "Approved";
         }
 
         return $status;
     }
 
-    public function addSection($data, $course_id){
-        
+    public function addSection($data, $course_id)
+    {
+        $course_name = $data['name'];
+
+        if (isset($data["submit"])) {
+
+            $query = "INSERT into section (course_id,name) values('$course_id','$course_name')";
+            $db = new Database();
+            $db->save($query);
+            header("Refresh:0");
+        }
+    }
+
+    public function isCourseByInstructorId($id, $course_id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT * FROM course WHERE id='$course_id' AND instructor_id='$id'";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_array($result);
+            if ($row['id'] == $course_id) {
+                return true;
+                // echo $row['id'] . "    ".$course_id;
+            } else {
+                // echo "false";
+                return false;
+            }
+        } else {
+            return null;
+        }
+    }
+
+
+    public function addContentToSection($data, $section_id, $course_id)
+    {
+
+        if (isset($data["submit"])) {
+            $error = "";
+            $title = $data['title'];
+            $description = $data['description'];
+            $point = $data['point'];
+            $url = $this->extractYoutubeCode($data['url']);
+            $preview = 1;
+            if (!isset($data['preview'])) {
+                $preview = 0;
+            }
+            if ($url == null) {
+                $error = "Enter a valid youtube link";
+                return $error;
+            } else {
+
+                $query = "INSERT into content (section_id,name,description,url,is_preview,point) 
+                values('$section_id','$title','$description','$url','$preview','$point')";
+                $db = new Database();
+                $db->save($query);
+            }
+            // echo $title . "-------" . $description . " ----- " . $url . "-------" . $preview;
+
+        }
+    }
+
+
+    public function approveCourse($id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM course WHERE id='$id'";
+        $result = mysqli_query($con, $query);
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
+            $created_time = $row['created_time'];
+            $query1 = "UPDATE course SET created_time='$created_time', is_approved=1, is_drafted=0,is_submitted=0 WHERE id='$id'";
+            $db->save($query1);
+            header("location: admin_course.php");
+        }
+    }
+
+    public function unlinkFile($id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM course WHERE id='$id'";
+        $result = mysqli_query($con, $query);
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
+            unlink($row['picture']);
+        }
+    }
+
+    public function deleteCourse($id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+        $this->unlinkFile($id);
+        $query = "DELETE FROM course WHERE id='$id'";
+        $result = mysqli_query($con, $query);
+        if ($result) {
+            header("location: admin_course.php");
+        }
+    }
+
+    public function submitCourse($id)
+    {
+
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM course WHERE id='$id'";
+        $result = mysqli_query($con, $query);
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
+            // $created_time = $row['created_time'];
+            $query1 = "UPDATE course SET is_submitted=1 WHERE id='$id'";
+            $db->save($query1);
+            header("location: course_details.php?id=" . $id);
+        }
+    }
+
+    public function insertCourseView($course_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "INSERT INTO course_view (course_id) VALUES ('$course_id')";
+        $result = mysqli_query($con, $query);
+    }
+
+    public function isPreviewActive($content_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM content WHERE id='$content_id'";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1){
+            $row = mysqli_fetch_assoc($result);
+            if($row['is_preview'] == true){
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
 }
