@@ -60,7 +60,7 @@ class Employer
             return $error;
         }
 
-        
+
         if (!isset($file['picture'])) {
             $error = "Please choose a photo";
             return $error;
@@ -111,7 +111,7 @@ class Employer
                 $query2 = "INSERT INTO employer_profile (user_id,company_name,description,industry,company_size,company_type,phone,year_founded,location,website,picture) 
                 VALUES ('$id','$company_name','$description','$industry','$company_size','$company_type','$phone','$year_founded','$location','$website','$targetFilePath')";
 
-                if($db->save($query2) == true){
+                if ($db->save($query2) == true) {
                     $query1 = "UPDATE user SET is_employer = 1 WHERE id = $id";
                     $db->save($query1);
                     move_uploaded_file($picture["tmp_name"], $targetFilePath);
@@ -123,6 +123,20 @@ class Employer
             }
         } else {
             echo $error;
+        }
+    }
+
+    public function findEmployerByUserID($user_id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT emp.id,emp.user_id, emp.company_name, emp.description,emp.picture, ind.name AS industry_name FROM employer_profile as emp JOIN industry as ind ON emp.industry = ind.id WHERE emp.user_id = '$user_id';";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_array($result);
+            return $row;
         }
     }
 }
