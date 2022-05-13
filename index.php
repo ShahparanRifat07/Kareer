@@ -183,7 +183,7 @@ $learner = new Learner();
                                             <div class="card-body c-body">
                                                 <h6 class="card-title"><a class="text-dark" href="course_details.php?id=<?php echo $row['id'] ?>"><?php echo $row['title'] ?></a></h6>
                                                 <p class="card-text"><?php echo $cur_instructor['instructor_name'] ?></p>
-                                                <p class="card-text">Price: $<?php echo $row['price']?></p>
+                                                <p class="card-text">Price: $<?php echo $row['price'] ?></p>
                                                 <a href="course_details.php?id=<?php echo $row['id'] ?>" class="d-flex justify-content-center btn btn-light btn-sm">Learn</a>
                                             </div>
                                         </div>
@@ -279,74 +279,45 @@ $learner = new Learner();
             </div>
             <div>
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="card mb-3 c-full">
-                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                <img src="https://www.softwaretestinghelp.com/wp-content/qa/uploads/2020/12/Python-Programming.png" class="img-fluid" />
-                                <a href="#!">
-                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                                </a>
-                            </div>
-                            <div class="card-body c-body">
-                                <h6 class="card-title">Learn Python</h6>
-                                <p class="card-text">Shahparn Rifat</p>
-                                <p class="card-text">Price: $18</p>
-                                <a href="#!" class="d-flex justify-content-center btn btn-dark btn-sm">Enroll</a>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="col-md-3">
-                        <div class="card mb-3 c-full">
-                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                <img src="https://www.softwaretestinghelp.com/wp-content/qa/uploads/2020/12/Python-Programming.png" class="img-fluid" />
-                                <a href="#!">
-                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                                </a>
-                            </div>
-                            <div class="card-body c-body">
-                                <h6 class="card-title">Learn Python</h6>
-                                <p class="card-text">Shahparn Rifat</p>
-                                <p class="card-text">Price: $18</p>
-                                <a href="#!" class="d-flex justify-content-center btn btn-dark btn-sm">Enroll</a>
-                            </div>
-                        </div>
-                    </div>
+                    <?php
 
-                    <div class="col-md-3">
-                        <div class="card mb-3 c-full">
-                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                <img src="https://www.softwaretestinghelp.com/wp-content/qa/uploads/2020/12/Python-Programming.png" class="img-fluid" />
-                                <a href="#!">
-                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                                </a>
+                    $query2 = "SELECT COUNT(cv.id) AS view, course_id, co.title,co.price,co.is_approved,co.picture,ins.instructor_name FROM course_view as cv JOIN course as co ON cv.course_id = co.id JOIN instructor_profile as ins ON co.instructor_id = ins.id WHERE co.is_approved=true GROUP BY cv.course_id ORDER BY view DESC LIMIT 4;";
+                    $result2 = mysqli_query($con, $query2);
+                    if (mysqli_num_rows($result2) > 0) {
+                        while ($row2 = mysqli_fetch_assoc($result2)) {
+                            $is_bought2 = $learner->checkIfCourseBoughtByUser($row2['course_id'], $user_id);
+                    ?>
+                            <div class="col-md-3">
+                                <div class="card mb-3 c-full">
+                                    <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                        <img src="<?php echo $row2['picture'] ?>" class="img-fluid" />
+                                        <a href="course_details.php?id=<?php echo $row2['course_id'] ?>">
+                                            <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                                        </a>
+                                    </div>
+                                    <div class="card-body c-body">
+                                        <h6 class="card-title"><a class="text-dark" href="course_details.php?id=<?php echo $row2['course_id'] ?>"><?php echo $row2['title'] ?></a></h6>
+                                        <p class="card-text"><?php echo $row2['instructor_name'] ?></p>
+                                        <p class="card-text">Price: $<?php echo $row2['price'] ?></p>
+                                        <?php
+                                        if ($is_bought2 == false) {
+                                        ?>
+                                            <a href="course_checkout.php?course_id=<?php echo $row2['course_id'] ?>" class="d-flex justify-content-center btn btn-dark btn-sm">Enroll</a>
+                                        <?php
+                                        } else {
+                                        ?>
+                                            <a href="course_details.php?id=<?php echo $row2['course_id'] ?>" class="d-flex justify-content-center btn btn-light btn-sm">Learn</a>
+                                        <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-body c-body">
-                                <h6 class="card-title">Learn Python</h6>
-                                <p class="card-text">Shahparn Rifat</p>
-                                <p class="card-text">Price: $18</p>
-                                <a href="#!" class="d-flex justify-content-center btn btn-dark btn-sm">Enroll</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card mb-3 c-full">
-                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                <img src="https://www.softwaretestinghelp.com/wp-content/qa/uploads/2020/12/Python-Programming.png" class="img-fluid" />
-                                <a href="#!">
-                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                                </a>
-                            </div>
-                            <div class="card-body c-body">
-                                <h6 class="card-title">Learn Python</h6>
-                                <p class="card-text">Shahparn Rifat</p>
-                                <p class="card-text">Price: $18</p>
-                                <a href="#!" class="d-flex justify-content-center btn btn-dark btn-sm">Enroll</a>
-                            </div>
-                        </div>
-                    </div>
-
+                    <?php
+                        }
+                    }
+                    ?>
                 </div>
             </div>
         </div>

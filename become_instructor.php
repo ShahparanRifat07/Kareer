@@ -53,7 +53,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 </head>
 
 <body>
-    <?php include "utility/navbar.php" ?>
+    <?php include "utility/just_navbar.php" ?>
 
     <div class="insform-header ">
         <h2 class="text-dark">Become An Instructor</h2>

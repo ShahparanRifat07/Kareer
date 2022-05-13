@@ -9,9 +9,9 @@ require_once("models/course.php");
 
 
 session_start();
-if ($_SESSION['LOGGEDIN'] != true) {
-    header('location: login.php');
-}
+// if ($_SESSION['LOGGEDIN'] != true) {
+//     header('location: login.php');
+// }
 
 $user_id = "";
 if (isset($_SESSION['USERID'])) {
@@ -52,6 +52,13 @@ $ins = new Instructor();
 $instructor = $ins->findInstructor($user_id);
 $course = new Course();
 $is_course_by_instructor = "";
+
+$is_preview = "";
+if ($course->isPreviewActive($content_id) !== null) {
+    $is_preview = $course->isPreviewActive($content_id);
+}
+
+
 if (isset($instructor)) {
     if ($course->isCourseByInstructorId($instructor['id'], $course_id) !== null) {
         $is_course_by_instructor = $course->isCourseByInstructorId($instructor['id'], $course_id);
@@ -62,7 +69,7 @@ function relax()
 {;
 }
 
-if ($is_brought == true || $is_admin == true || $is_course_by_instructor == true) {
+if ($is_brought == true || $is_admin == true || $is_course_by_instructor == true || $is_preview == true) {
     relax();
 } else {
     header("location: no_access.php");
@@ -111,7 +118,13 @@ if ($is_brought == true || $is_admin == true || $is_course_by_instructor == true
 
 <body>
 
-    <?php include "utility/instructor_navbar.php" ?>
+    <?php
+    if (!empty($instructor_id)) {
+        include "utility/instructor_navbar.php";
+    } else {
+        include "utility/navbar.php";
+    }
+    ?>
 
     <div class="container">
         <div class="row">
@@ -146,8 +159,8 @@ if ($is_brought == true || $is_admin == true || $is_course_by_instructor == true
                                                                                                                                                                                             ?> class="text-warning" <?php
                                                                                                                                                                                                                 } else {
                                                                                                                                                                                                                     ?> class="text-light" <?php
-                                                                                                                                                                                                                }
-                                                                                                ?>>
+                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                            ?>>
                                                     <?php echo $row3['name'] ?>
                                                 </a>
                                             </li>
@@ -188,6 +201,11 @@ if ($is_brought == true || $is_admin == true || $is_course_by_instructor == true
                     </div>
                 <?php
                 } else {
+                ?>
+                    <div class="card">
+                        <h3 class="mt-4 mb-4">Sorry! Can't play this video.</h3>
+                    </div>
+                <?php
                 }
                 ?>
             </div>

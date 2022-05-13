@@ -26,7 +26,13 @@ $us = new User();
 $user = $us->findUserByUserId($id);
 $learner = new Learner();
 $cor = new Course();
-$course = $cor->findCourseById($course_id);
+$course = "";
+if($cor->findCourseById($course_id)!==null){
+    $course = $cor->findCourseById($course_id);
+}else{
+    header("location: 404.php");
+}
+$cor->insertCourseView($course['id']);
 $cat = new Category();
 $category = $cat->findCategoryById($course['category_id']);
 $category_name = $category['name'];

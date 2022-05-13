@@ -274,10 +274,33 @@ class Course
         $result = mysqli_query($con, $query);
         if (mysqli_num_rows($result) == 1) {
             $row = mysqli_fetch_assoc($result);
-            $created_time = $row['created_time'];
-            $query1 = "UPDATE course SET created_time='$created_time',is_submitted=1 WHERE id='$id'";
+            // $created_time = $row['created_time'];
+            $query1 = "UPDATE course SET is_submitted=1 WHERE id='$id'";
             $db->save($query1);
             header("location: course_details.php?id=" . $id);
+        }
+    }
+
+    public function insertCourseView($course_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "INSERT INTO course_view (course_id) VALUES ('$course_id')";
+        $result = mysqli_query($con, $query);
+    }
+
+    public function isPreviewActive($content_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM content WHERE id='$content_id'";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1){
+            $row = mysqli_fetch_assoc($result);
+            if($row['is_preview'] == true){
+                return true;
+            }else{
+                return false;
+            }
         }
     }
 }

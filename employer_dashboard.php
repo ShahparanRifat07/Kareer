@@ -1,40 +1,75 @@
 <?php
 
+require_once("models/database.php");
+require_once("models/user.php");
+require_once("models/employer.php");
 
-$value = array();
-for($i=1;$i<6;$i++){
-    $value += array($i => $i+10);
+session_start();
+
+if ($_SESSION['LOGGEDIN'] != true) {
+    header('location: login.php');
 }
 
-foreach($value as $v => $v_value) {
-    echo "Key=" . $v . ", Value=" . $v_value;
-    echo "<br>";
+$db = new Database();
+$con = $db->connect_db();
+$id = $_SESSION['USERID'];
+
+$emp = new Employer();
+
+if (($emp->checkIsEmployer($id)) != true) {
+    header("location: no_access.php");
 }
 
-$json = json_encode($value, true);
+?>
 
-echo $json;
+<!DOCTYPE html>
+<html lang="en">
 
-$json1 = json_decode($json, true);
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/profile.css" rel="stylesheet">
 
-foreach($json1 as $key => $value) {
-    echo "Key=" . $key . ", Value=" . $value;
-    echo "<br>";
-}
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.11.0/mdb.min.css" rel="stylesheet" />
 
-// $employees = array();
+    <title>Document</title>
 
+    <style>
+        body {
+            background-color: #fcde67;
+        }
+    </style>
+</head>
 
-// $employees += array('employee'=> "RIfat", 'country'=> "Ban");
-// $employees += array('employee'=> "RIfrrrat", 'country'=> "Bereran");
-// $employees += array('employee'=> "Rt", 'country'=> "Banddd");
-// $employees += array('employee'=> "RgdfIfat", 'country'=> "Bfdfean");
+<body>
+    <?php include "utility/employer_navbar.php" ?>
 
-// // foreach($employees as $v => $v_value) {
-// //     echo "Key=" . $v . ", Value=" . $v_value;
-// //     echo "<br>";
-// // }
+    <div class="container">
+        <div class="card mt-4">
 
-// $json = json_encode($employees, true);
+            <div class="row">
+                <div class="col-md-3">
+                    <img src="https://play-lh.googleusercontent.com/1cqAnD-lDTtohKEUE_oJ6hTubEwiXLKTjV8WCf6SJJA73d05qnvJ_HXeBvs3nQQZHj0" alt="" height="200px" width="200px">
+                </div>
+                <div class="col-md-9">
+                    <h5>HTC GROUP</h5>
+                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores cumque deleniti aliquid quam </p>
+                    <p>Software development</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-// echo $json;
+    <?php include "utility/footer.php" ?>
+    <!-- MDB -->
+    <!-- <script type="text/javascript" src="js/main.js"></script> -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.11.0/mdb.min.js"></script>
+</body>
+
+</html>

@@ -1,9 +1,9 @@
 <?php
 $rootDir = realpath($_SERVER["DOCUMENT_ROOT"]);
 
-require_once("$rootDir/Kareer/models/database.php");
-require_once("$rootDir/Kareer/models/user.php");
-require_once("$rootDir/Kareer/models/learnerProflie.php");
+require_once("models/database.php");
+require_once("models/user.php");
+require_once("models/learnerProflie.php");
 require_once("models/category.php");
 // require_once("$rootDir/Kareer/instructor/dashboard.php");
 
