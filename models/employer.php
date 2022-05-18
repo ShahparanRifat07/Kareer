@@ -139,4 +139,19 @@ class Employer
             return $row;
         }
     }
+
+    public function findLocationById($location_id){
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT * FROM location WHERE id = '$location_id'";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_array($result);
+            return $row;
+        }
+    }
+
+    
 }

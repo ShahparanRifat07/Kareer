@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
  
     <div class="container mt-4 mb-4">
         <div class="card bg-dark ">
-            <h2 class="text-light">Become An Instructor</h2>
+            <h2 class="text-light">Become An Employer</h2>
         </div>
 
         <div class="card p-4">
