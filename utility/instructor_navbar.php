@@ -131,7 +131,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                         <li>
-                            <a class="dropdown-item" href="#">Public Profile</a>
+                            <a class="dropdown-item" href="profile.php">Public Profile</a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">Edit Profile</a>

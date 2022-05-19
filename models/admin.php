@@ -21,6 +21,33 @@ class Admin{
         }
     }
 
-}
+    public function findTotalUser(){
 
-?>
+    }
+
+    public function findLast7DayUser(){
+        $db = new Database();
+        $con = $db->connect_db();
+
+        
+        $query = "SELECT COUNT(id) as userNum,DAY(created_time) as day FROM user
+        WHERE created_time > DATE(now()) - INTERVAL 7 day
+        GROUP BY DAY(created_time);";
+        $result = mysqli_query($con,$query);
+
+
+        if($result){
+            $value = array();
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                        $value += array($row['day'] => $row['userNum']);
+                }
+            }
+
+            
+            return $value;
+        }
+
+    }
+
+}

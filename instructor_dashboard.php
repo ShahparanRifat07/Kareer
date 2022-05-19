@@ -174,12 +174,6 @@ if (isset($_GET['view'])) {
                         $status = $cor->findStatus($row);
                         if ($status == "Drafted" || $status == "Submitted") {
                 ?>
-
-                            <!-- <p><?php echo $row['title'] ?></p>
-                        <p><?php echo $row['picture'] ?></p>
-                        <p><?php echo $row['price'] ?></p> -->
-                            <!-- <p><?php echo $ins_name ?></p> -->
-
                             <div class="col-4">
                                 <div class="card ">
                                     <img src="<?php echo $row['picture'] ?>" class="card-img-top" height="100px" alt="Fissure in Sandstone" />
@@ -192,13 +186,13 @@ if (isset($_GET['view'])) {
                                     </div>
                                 </div>
                             </div>
-                        <?php
-                        } 
+                    <?php
+                        }
                     }
                 } else {
                     ?>
                     <div class="card">
-                        <h4 class="card-title">No Courses Found</h4>
+                        <h4 class="card-title">No Draft Courses</h4>
                     </div>
                 <?php
                 }
@@ -217,18 +211,43 @@ if (isset($_GET['view'])) {
 
             <div class="row">
 
-                <div class="col-4">
-                    <div class="card">
-                        <img src="https://www.imgacademy.com/themes/custom/imgacademy/images/helpbox-contact.jpg" class="card-img-top" height="100px" alt="Fissure in Sandstone" />
-                        <div class="card-body">
-                            <h5 class="card-title">Learn Django</h5>
-                            <p class="card-text">Shahparan Rifat</p>
-                            <p class="card-text">Price: 24$</p>
+                <?php
+                $ins = new Instructor();
+                $instructor = $ins->findInstructor($id);
+                $ins_id = $instructor['id'];
+                $query = "SELECT * FROM course WHERE instructor_id = '$ins_id' ORDER BY created_time DESC LIMIT 3 ";
+                $result = $con->query($query);
+                if ($result->num_rows > 0) {
+                    // output data of each row
+                    while ($row = $result->fetch_assoc()) {
+                        $status = $cor->findStatus($row);
+                        if ($status == "Approved") {
+                ?>
 
-                            <a href="#!" class="btn btn-dark btn-sm">View</a>
-                        </div>
+                            <div class="col-4">
+                                <div class="card">
+                                    <img src="<?php echo $row['picture'] ?>" class="card-img-top" height="100px" alt="Fissure in Sandstone" />
+                                    <div class="card-body">
+                                        <h5 class="card-title"><?php echo $row["title"] ?></h5>
+                                        <p class="card-text"><?php echo $instructor['instructor_name'] ?></p>
+                                        <p class="card-text">Price: <?php echo $row["price"] ?>$</p>
+
+                                        <a href="course_details.php?id=<?php echo $row['id'] ?>" class="btn btn-dark btn-sm">View</a>
+                                    </div>
+                                </div>
+                            </div>
+                    <?php
+                        }
+                    }
+                } else {
+                    ?>
+                    <div class="card">
+                        <h4 class="card-title">No Draft Courses</h4>
                     </div>
-                </div>
+                <?php
+                }
+
+                ?>
             </div>
         </div>
     </div>

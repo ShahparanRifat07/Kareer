@@ -18,10 +18,14 @@ if ($admin->is_admin($id) == false) {
     header("location: no_access.php");
 }
 
-$value = array();
-for ($i = 1; $i < 6; $i++) {
-    $value += array($i => $i + 10);
-}
+// $value = array();
+// for ($i = 1; $i < 6; $i++) {
+//     $value += array($i => $i + 10);
+// }
+
+$value = $admin->findLast7DayUser();
+
+
 
 
 
@@ -211,5 +215,16 @@ for ($i = 1; $i < 6; $i++) {
     </script>
 
 </body>
+
+<?php
+
+$value = $admin->findLast7DayUser();
+
+foreach($value as $x => $x_value){
+    echo "Key=" . $x . ", Value=" . $x_value;
+    echo "<br>";
+}
+
+?>
 
 </html>
