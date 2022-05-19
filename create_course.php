@@ -123,6 +123,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <label class="form-label" for="form6Example3">Price</label>
                 </div>
 
+                <div class="form-outline mb-4">
+                    <input name="point_needed" type="number" min="0" id="form6Example3" class="form-control" placeholder="EX: 350" />
+                    <label class="form-label" for="form6Example3">Total points need to complete the course*</label>
+                </div>
+
                 <label class="form-label" for="customFile">Upload Course Thumbnail</label>
                 <input name="picture" type="file" class="form-control"  id="customFile" />
 

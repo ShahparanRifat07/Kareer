@@ -46,6 +46,10 @@ $is_submitted = $course['is_submitted'];
 $is_approved = $course['is_approved'];
 $status = $cor->findStatus($course);
 $picture = $course['picture'];
+$point_needed = $course['point_needed'];
+$total_point = $cor->findCurrentCoursePoint($course_id);
+
+// $current_course_point = 
 
 $course_instructor_id = $course['instructor_id'];
 $ins = new Instructor();
@@ -149,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <div id="headCard" class="card">
             <div>
-                <h3><?php echo $course['title']  ?></h3>
+                <h3><?php echo $course['title']  ?> ( <i class="fa-solid fa-star"></i><?php echo $total_point  ?>)</h3>
 
             </div>
             <hr>
@@ -164,6 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <p><strong>Created Time:</strong> <?php echo $year ?></p>
                     <p><strong>Active:</strong> <?php echo $active ?></p>
                     <p><strong>Status:</strong> <?php echo $status ?></p>
+                    <p><strong>Total Point Needed:</strong> <i class="fa-solid fa-star"></i> <?php echo $point_needed ?></p>
                 </div>
                 <div class="col-md-3">
                     <div class="card">
@@ -329,20 +334,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                                         ?>
                                                     <li class="list-group-item ">
-                                                        <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?> <span class="text-warning">(<?php echo $row3['point'] ?>)</span></a>
+                                                        <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?> <span class="text-warning">( <i class="fa-solid fa-star"></i> <?php echo $row3['point'] ?>)</span></a>
                                                     </li>
                                                     <?php
                                                 } else {
                                                     if ($row3['is_preview'] == true) {
                                                     ?>
                                                         <li class="list-group-item ">
-                                                            <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?> <span class="text-warning">(<?php echo $row3['point'] ?>)</span></a>
+                                                            <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?> <span class="text-warning">( <i class="fa-solid fa-star"></i> <?php echo $row3['point'] ?>)</span></a>
                                                         </li>
                                                     <?php
                                                     } else {
                                                     ?>
                                                         <li class="list-group-item">
-                                                            <span><?php echo $row3['name'] ?> <span class="text-warning">(<?php echo $row3['point'] ?>)</span></span>
+                                                            <span><?php echo $row3['name'] ?> <span class="text-warning">( <i class="fa-solid fa-star"></i> <?php echo $row3['point'] ?>)</span></span>
                                                         </li>
                                                     <?php
                                                     }

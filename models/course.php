@@ -29,8 +29,15 @@ class Course
             return $this->error_msg;
         }
 
+
+
         if (empty($price)) {
             $this->error_msg = "Price can't be empty";
+            return $this->error_msg;
+        }
+
+        if (!isset($data['point_needed'])) {
+            $this->error_msg = "Please enter the total point needed to complete this course";
             return $this->error_msg;
         }
 
@@ -71,6 +78,7 @@ class Course
             $description = $data['description'];
             $category = $data['category'];
             $price = $data['price'];
+            $point_needed = $data['point_needed'];
             $picture = $file['picture'];
 
 
@@ -104,8 +112,8 @@ class Course
                 // echo $ins_id."   ". $title ."   ". $description ."  ". $category . "   ". $price . "  ". $targetFilePath;
 
                 try {
-                    $query = "INSERT INTO course (instructor_id,title,description,category_id,price,picture)
-                    VALUES ('$ins_id','$title','$description','$category','$price','$targetFilePath')";
+                    $query = "INSERT INTO course (instructor_id,title,description,category_id,price,picture,point_needed)
+                    VALUES ('$ins_id','$title','$description','$category','$price','$targetFilePath','$point_needed')";
 
                     if ($db->save($query) == true) {
                         move_uploaded_file($picture["tmp_name"], $targetFilePath);
@@ -297,6 +305,69 @@ class Course
         if (mysqli_num_rows($result) == 1){
             $row = mysqli_fetch_assoc($result);
             if($row['is_preview'] == true){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
+
+    public function findCurrentCoursePoint($course_id){
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT SUM(point) AS total_point 
+                    FROM content AS con
+                    JOIN section AS sec
+                    ON con.section_id = sec.id
+                    JOIN course AS cor
+                    ON sec.course_id = cor.id
+                    WHERE cor.id = '$course_id';";
+
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_array($result);
+            return $row['total_point'];
+        } else {
+            return null;
+        }
+    }
+
+
+    public function completeCourseContent($content_id,$user_id){
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $learner = new Learner();
+        $learner_object = $learner->findLearnerByUserID($user_id);
+        $learner_id= $learner_object['id'];
+        if($learner_id != null){
+            $query = "INSERT INTO complete_content (learner_id,content_id) VALUES ('$learner_id','$content_id')";
+            $result = mysqli_query($con, $query);
+
+            if($result){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
+
+    public function checkIfContentComplete($content_id,$user_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $learner = new Learner();
+        $learner_object = $learner->findLearnerByUserID($user_id);
+        $learner_id= $learner_object['id'];
+
+        if($learner_id != null){
+            $query = "SELECT * FROM complete_content WHERE learner_id='$learner_id' AND content_id='$content_id'";
+            $result = mysqli_query($con, $query);
+
+            if(mysqli_num_rows($result) == 1){
                 return true;
             }else{
                 return false;
