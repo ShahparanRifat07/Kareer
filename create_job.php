@@ -92,13 +92,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     <!-- Text input -->
                     <div class="form-outline mb-4">
-                        <input name="title" type="text" id="form6Example3" class="form-control" />
+                        <input name="title" type="text" id="form6Example3" class="form-control" required/>
                         <label class="form-label" for="form6Example3">Job Title*</label>
                     </div>
 
                     <!-- Text input -->
                     <div class="form-outline mb-4">
-                        <textarea name="description" type="text" id="form6Example3" class="form-control" rows="8"></textarea>
+                        <textarea name="description" type="text" id="form6Example3" class="form-control" rows="8" required></textarea>
                         <label class="form-label" for="form6Example3">Job Description*</label>
                     </div>
 
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
                     <div class="form-outline mb-4">
-                        <input name="people" type="number" min="0" id="form6Example3" class="form-control" />
+                        <input name="people" type="number" min="0" id="form6Example3" class="form-control" required/>
                         <label class="form-label" for="form6Example3">How many people do you want to hire</label>
                     </div>
 
@@ -157,13 +157,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="row mb-4">
                         <div class="col">
                             <div class="form-outline">
-                                <input name="minimum" type="number" min="0" id="form3Example1" class="form-control" />
+                                <input name="minimum" type="number" min="0" id="form3Example1" class="form-control" required/>
                                 <label class="form-label" for="form3Example1">Minimum</label>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-outline">
-                                <input name="maximum" type="number" min="0" id="form3Example2" class="form-control" />
+                                <input name="maximum" type="number" min="0" id="form3Example2" class="form-control" required/>
                                 <label class="form-label" for="form3Example2">Maximum</label>
                             </div>
                         </div>

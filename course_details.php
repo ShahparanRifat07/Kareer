@@ -25,6 +25,8 @@ if (isset($_GET['id'])) {
 $us = new User();
 $user = $us->findUserByUserId($id);
 $learner = new Learner();
+$learner_object = $learner->findLearnerByUserID($id);
+$learner_id= $learner_object['id'];
 $cor = new Course();
 $course = "";
 if($cor->findCourseById($course_id)!==null){
@@ -154,7 +156,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div id="headCard" class="card">
             <div>
                 <h3><?php echo $course['title']  ?> ( <i class="fa-solid fa-star"></i><?php echo $total_point  ?>)</h3>
-
+                <?php
+                if($is_bought == true){
+                ?>
+                <h6>Point completed: <i class="fa-solid fa-star"></i><?php echo $cor->findHowManyPointsCompleted($course['id'],$learner_id)?></h6>
+                <?php
+                }
+                ?>
             </div>
             <hr>
 

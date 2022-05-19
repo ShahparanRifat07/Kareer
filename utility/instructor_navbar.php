@@ -127,14 +127,11 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                 <!-- Avatar -->
                 <div class="dropdown">
                     <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                        <img src="<?php echo $profile_pic ?>" class="rounded-circle" height="25" alt="Profile Pic" loading="lazy" />
+                        <img src="<?php echo $profile_pic ?>" class="rounded-circle" height="25" width="25" alt="Profile Pic" loading="lazy" />
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                         <li>
-                            <a class="dropdown-item" href="profile.php">Public Profile</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Edit Profile</a>
+                            <a class="dropdown-item" href="profile.php?user_id=<?php echo $id ?>">Public Profile</a>
                         </li>
                         <hr>
                         <li>

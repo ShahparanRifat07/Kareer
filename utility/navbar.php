@@ -103,6 +103,13 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                         ?>
                     </ul>
                 </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Ranking</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="create_job.php"><span><i class="fa-solid fa-briefcase"></i> Jobs</a>
+                </li>
             </ul>
             <div class="col-md-8 ms-3">
                 <form class="d-flex input-group w-auto my-auto ">
@@ -194,7 +201,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                 <!-- Avatar -->
                 <div class="dropdown">
                     <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                        <img src="<?php echo $profile_pic ?>" class="rounded-circle" height="25" alt="Profile Pic" loading="lazy" />
+                        <img src="<?php echo $profile_pic ?>" class="rounded-circle" height="25" width="25" alt="Profile Pic" loading="lazy" />
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
 
@@ -254,10 +261,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
 
 
                         <li>
-                            <a class="dropdown-item" href="profile.php">Public Profile</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Edit Profile</a>
+                            <a class="dropdown-item" href="profile.php?user_id=<?php echo $id ?>">Public Profile</a>
                         </li>
                         <hr>
                         <li>

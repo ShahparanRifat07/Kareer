@@ -59,7 +59,7 @@ class Learner
             $row = mysqli_fetch_array($result);
             // $ins_id = $row['id'];
             return $row;
-        }else{
+        } else {
             return false;
         }
     }
@@ -89,7 +89,7 @@ class Learner
         $query = "SELECT * FROM course_transaction WHERE course_id='$course_id' AND learner_id='$learner_id'";
         $result = mysqli_query($con, $query);
 
-        if (mysqli_num_rows($result) == 1){
+        if (mysqli_num_rows($result) == 1) {
             header("location: course_details.php?id=$course_id");
         }
     }
@@ -100,19 +100,20 @@ class Learner
         $con = $db->connect_db();
         $learner = $this->findLearnerByUserID($user_id);
         $learner_id = "";
-        if($learner!= false){
+        if ($learner != false) {
             $learner_id = $learner['id'];
         }
         $query = "SELECT * FROM course_transaction WHERE course_id='$course_id' AND learner_id='$learner_id'";
         $result = mysqli_query($con, $query);
 
-        if (mysqli_num_rows($result) == 1){
+        if (mysqli_num_rows($result) == 1) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
-    public function checkIfAnyCourseBought($user_id){
+    public function checkIfAnyCourseBought($user_id)
+    {
         $db = new Database();
         $con = $db->connect_db();
         $learner = $this->findLearnerByUserID($user_id);
@@ -120,10 +121,122 @@ class Learner
         $query = "SELECT * FROM course_transaction WHERE learner_id='$learner_id'";
         $result = mysqli_query($con, $query);
 
-        if (mysqli_num_rows($result) > 0){
+        if (mysqli_num_rows($result) > 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
+    }
+
+
+    public function addAbout($data, $learner_id)
+    {
+
+        $about = $data['about'];
+
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "UPDATE learner_profile SET biography = '$about' WHERE id = '$learner_id'";
+        $result = mysqli_query($con, $query);
+        if ($result) {
+            $query1 = "SELECT user_id FROM learner_profile WHERE id = '$learner_id'";
+            $result1 = mysqli_query($con, $query1);
+            $row = mysqli_fetch_assoc($result1);
+            $user_id = $row['user_id'];
+            header("location: profile.php?user_id=$user_id");
+        }
+    }
+
+    public function addSkills($data, $user_id)
+    {
+
+        $skill = $data['skill'];
+
+        $db = new Database();
+        $con = $db->connect_db();
+        $query =  "INSERT INTO skill (user_id,skill)
+        VALUES('$user_id','$skill');";
+        $result = mysqli_query($con, $query);
+        if ($result) {
+            header("location: profile.php?user_id=$user_id");
+        }
+    }
+
+
+    
+    
+
+    public function findTotalPointsOfLearner($learner_id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT SUM(con.point) as total_point
+                    FROM complete_content as com
+                    JOIN content as con
+                    ON com.content_id = con.id
+                    WHERE learner_id = '$learner_id';";
+
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
+            return $row;
+        }
+    }
+
+    public function valid($file)
+    {
+
+        $error = "";
+        $fileType = "";
+
+        if (!isset($file['picture'])) {
+            $error = "Please choose a photo";
+            return $error;
+        } else {
+            $picture = $file['picture'];
+            $targetDir = "uploads_company_image/";
+            $fileName = basename($picture["name"]);
+            $targetFilePath = $targetDir . $fileName;
+            $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+        }
+
+        $allowTypes = array('jpg', 'png', 'jpeg');
+        if (!in_array($fileType, $allowTypes)) {
+            $this->error_msg = 'Sorry, only JPG, JPEG, PNG, files are allowed to upload.';
+            return $this->error_msg;
+        }
+    }
+
+    public function UpdateProfilePicture($file,$learner_id,$user_id){
+
+        $error = $this->valid($file);
+
+        if (empty($error)) {
+            $picture = $file['picture'];
+            $db = new Database();
+
+            $targetDir = "uploads_profile_pic/";
+            $fileName = basename($picture["name"]);
+            $filename_without_ext = pathinfo($fileName, PATHINFO_FILENAME);
+            $uniquesavename = time() . uniqid(rand());
+            $targetFilePath = $targetDir . $filename_without_ext .$learner_id. $uniquesavename . ".jpg";
+
+            try {
+                $query = "UPDATE learner_profile SET profile_pic = '$targetFilePath' WHERE id = $learner_id";
+
+                if ($db->save($query) == true) {
+                    move_uploaded_file($picture["tmp_name"], $targetFilePath);
+                    header("location: profile.php?user_id=$user_id");
+                }
+            } catch (mysqli_sql_exception $e) {
+                var_dump($e);
+                exit;
+            }
+
+        }else{
+            echo $error;
+        }
+
     }
 }

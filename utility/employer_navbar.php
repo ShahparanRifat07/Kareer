@@ -1,11 +1,10 @@
 <?php
-$rootDir = realpath($_SERVER["DOCUMENT_ROOT"]);
 
-require_once("$rootDir/Kareer/models/database.php");
-require_once("$rootDir/Kareer/models/user.php");
-require_once("$rootDir/Kareer/models/learnerProflie.php");
-require_once("$rootDir/Kareer/models/instructor.php");
-// require_once("$rootDir/Kareer/instructor/dashboard.php");
+require_once("models/database.php");
+require_once("models/user.php");
+require_once("models/employer.php");
+require_once("models/learnerProflie.php");
+
 
 if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
 
@@ -70,51 +69,15 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     
-                    <a class="nav-link" href="create_course.php"><span><i class="fa-solid fa-briefcase"></i> Post Job</a>
+                    <a class="nav-link" href="create_job.php"><span><i class="fa-solid fa-briefcase"></i> Post Job</a>
                 </li>
             </ul>
             <!-- Left links -->
 
         </div>
-        <!-- Collapsible wrapper -->
-
-
-
-        <!-- <form class="d-flex input-group w-80 w-auto ">
-            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-            <span class="input-group-text border-0" id="search-addon">
-                <i class="fas fa-search"></i>
-            </span>
-        </form> -->
 
         <!-- Right elements -->
         <div class="d-flex align-items-center">
-            <!-- Icon -->
-            <!-- <a class="text-reset me-3" href="#">
-                <i class="fas fa-shopping-cart"></i>
-            </a> -->
-
-            <!-- Notifications -->
-            <!-- <div class="dropdown">
-                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-bell"></i>
-                    <span class="badge rounded-pill badge-notification bg-danger">1</span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                    <li>
-                        <a class="dropdown-item" href="#">Some news</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">Another news</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </li>
-                </ul>
-            </div> -->
-
-
-
             <?php
             if (isset($_SESSION['LOGGEDIN'])) {
             ?>
@@ -127,7 +90,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                 <!-- Avatar -->
                 <div class="dropdown">
                     <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                        <img src="<?php echo $profile_pic ?>" class="rounded-circle" height="25" alt="Profile Pic" loading="lazy" />
+                        <img src="<?php echo $profile_pic ?>" class="rounded-circle" height="25" width="25" alt="Profile Pic" loading="lazy" />
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                         <li>
@@ -143,17 +106,6 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                         <li>
                             <a class="dropdown-item" href="#">Posted jobs</a>
                         </li>
-                        <hr>
-                        <li>
-                            <a class="dropdown-item" href="#">Draft Courses</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Published Courses</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">All Courses</a>
-                        </li>
-                        <hr>
                         <hr>
                         <li>
                             <a class="dropdown-item" href="#">Settings</a>

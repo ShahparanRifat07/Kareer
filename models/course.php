@@ -374,4 +374,24 @@ class Course
             }
         }
     }
+
+    public function findHowManyPointsCompleted($course_id,$learner_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT SUM(con.point) AS completed_point
+                    FROM complete_content as complete
+                    JOIN content as con
+                    ON complete.content_id = con.id
+                    JOIN section as sec
+                    ON con.section_id = sec.id
+                    JOIN course as cor
+                    ON sec.course_id = cor.id
+                    WHERE complete.learner_id = '$learner_id' AND cor.id='$course_id';";
+        $result = mysqli_query($con, $query);
+        if(mysqli_num_rows($result) == 1){
+            $row = mysqli_fetch_assoc($result);
+            return $row['completed_point'];
+        }
+
+    }
 }
