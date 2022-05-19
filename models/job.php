@@ -1,6 +1,7 @@
 <?php
 
-class Job{
+class Job
+{
     public function valid($data)
     {
 
@@ -67,7 +68,7 @@ class Job{
     {
         $db = new Database();
         $con = $db->connect_db();
-        
+
         $transaction_id = $this->generate_uuid();
         $query = "INSERT INTO job_transaction (job_id,employe_id,transaction_id)
             VALUES ('$job_id','$employe_id','$transaction_id')";
@@ -97,7 +98,7 @@ class Job{
             $maximum = $data['maximum'];
             $location = $data['location'];
 
-            echo $id."   ".$title."   ".$description."   ".$type."   ".$schedule."   ".$people."    ".$maximum."    ".$minimum."    ".$location;
+            echo $id . "   " . $title . "   " . $description . "   " . $type . "   " . $schedule . "   " . $people . "    " . $maximum . "    " . $minimum . "    " . $location;
 
             $db = new Database();
             $con = $db->connect_db();
@@ -108,11 +109,11 @@ class Job{
             try {
                 $query = "INSERT INTO job (employe_id,title,description,type,schedule,people,minimum,maximum,location) 
                 VALUES ('$employe_id','$title','$description','$type','$schedule','$people','$minimum','$maximum','$location')";
-                $result = mysqli_query($con,$query);
+                $result = mysqli_query($con, $query);
                 $job_id = mysqli_insert_id($con);
 
                 if ($result) {
-                    $this->buyCourse($job_id,$employe_id);
+                    $this->buyCourse($job_id, $employe_id);
                 }
             } catch (mysqli_sql_exception $e) {
                 var_dump($e);
@@ -124,7 +125,8 @@ class Job{
     }
 
 
-    public function findLocationById($location_id){
+    public function findLocationById($location_id)
+    {
         $db = new Database();
         $con = $db->connect_db();
 
@@ -137,7 +139,8 @@ class Job{
         }
     }
 
-    public function findJobTypeById($type_id){
+    public function findJobTypeById($type_id)
+    {
         $db = new Database();
         $con = $db->connect_db();
 
@@ -150,6 +153,33 @@ class Job{
         }
     }
 
+    public function time_elapsed_string($datetime, $full = false)
+    {
+        $now = new DateTime;
+        $ago = new DateTime($datetime);
+        $diff = $now->diff($ago);
 
+        $diff->w = floor($diff->d / 7);
+        $diff->d -= $diff->w * 7;
 
+        $string = array(
+            'y' => 'year',
+            'm' => 'month',
+            'w' => 'week',
+            'd' => 'day',
+            'h' => 'hour',
+            'i' => 'minute',
+            's' => 'second',
+        );
+        foreach ($string as $k => &$v) {
+            if ($diff->$k) {
+                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+            } else {
+                unset($string[$k]);
+            }
+        }
+
+        if (!$full) $string = array_slice($string, 0, 1);
+        return $string ? implode(', ', $string) . ' ago' : 'just now';
+    }
 }

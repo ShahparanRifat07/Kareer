@@ -108,7 +108,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                     <a class="nav-link" href="#">Ranking</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="create_job.php"><span><i class="fa-solid fa-briefcase"></i> Jobs</a>
+                    <a class="nav-link" href="all_jobs.php"><span><i class="fa-solid fa-briefcase"></i> Jobs</a>
                 </li>
             </ul>
             <div class="col-md-8 ms-3">
