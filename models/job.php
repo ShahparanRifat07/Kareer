@@ -182,4 +182,64 @@ class Job
         if (!$full) $string = array_slice($string, 0, 1);
         return $string ? implode(', ', $string) . ' ago' : 'just now';
     }
+
+    public function findJobDetailsByJobID($job_id)
+    {
+
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT job.id,job.title,job.created_time,emp.company_name,job_type.type,location.location,emp.picture,job.minimum,job.maximum,job.description,job_schedule.schedule,job.people,industry.name,emp.website,company_size.size
+                    FROM job
+                    JOIN employer_profile AS emp
+                    ON job.employe_id = emp.id
+                    JOIN job_type
+                    ON job.type = job_type.id
+                    JOIN location
+                    ON job.location = location.id
+                    JOIN job_schedule
+                    ON job.schedule = job_schedule.id
+                    JOIN industry
+                    ON emp.industry = industry.id
+                    JOIN company_size
+                    ON emp.company_size = company_size.id
+                    WHERE job.id = '$job_id'";
+
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_array($result);
+            return $row;
+        }
+    }
+
+    public function checkIfAlreadyApplyToJob($job_id,$learner_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM job_apply WHERE job_id='$job_id' AND learner_id='$learner_id'";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) > 0) {
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    public function applyToJob($job_id,$learner_id){
+        $db = new Database();
+        $con = $db->connect_db();
+
+        if($this->checkIfAlreadyApplyToJob($job_id,$learner_id) == false){
+            $query = "INSERT INTO job_apply (learner_id, job_id)
+                    VALUES ('$learner_id', '$job_id')";
+            $result = mysqli_query($con, $query);
+            if($result){
+                header("location: job_details.php?job_id=$job_id");
+            }
+        }else{
+            echo "You already applied to this job";
+        }
+    }
 }

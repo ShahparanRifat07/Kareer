@@ -68,7 +68,7 @@ $job = new Job();
 
         <?php
 
-        $query = "SELECT * 
+        $query = "SELECT job.id,job.title,job.created_time,emp.company_name,job_type.type,location.location,emp.picture
                     FROM job
                     JOIN employer_profile AS emp
                     ON job.employe_id = emp.id
@@ -92,7 +92,7 @@ $job = new Job();
                             </div>
                         </div>
                         <div class="col-md-9 mt-2">
-                            <a href="">
+                            <a href="job_details.php?job_id=<?php echo $row['id'] ?>">
                                 <h2><?php echo $row['title']?></h2>
                             </a>
                             <p><?php echo $row['company_name']?></p>
