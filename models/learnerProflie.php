@@ -163,8 +163,8 @@ class Learner
     }
 
 
-    
-    
+
+
 
     public function findTotalPointsOfLearner($learner_id)
     {
@@ -208,7 +208,8 @@ class Learner
         }
     }
 
-    public function UpdateProfilePicture($file,$learner_id,$user_id){
+    public function UpdateProfilePicture($file, $learner_id, $user_id)
+    {
 
         $error = $this->valid($file);
 
@@ -220,7 +221,7 @@ class Learner
             $fileName = basename($picture["name"]);
             $filename_without_ext = pathinfo($fileName, PATHINFO_FILENAME);
             $uniquesavename = time() . uniqid(rand());
-            $targetFilePath = $targetDir . $filename_without_ext .$learner_id. $uniquesavename . ".jpg";
+            $targetFilePath = $targetDir . $filename_without_ext . $learner_id . $uniquesavename . ".jpg";
 
             try {
                 $query = "UPDATE learner_profile SET profile_pic = '$targetFilePath' WHERE id = $learner_id";
@@ -233,10 +234,26 @@ class Learner
                 var_dump($e);
                 exit;
             }
-
-        }else{
+        } else {
             echo $error;
         }
+    }
 
+
+    public function findLearnerByLearnerID($learner_id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT * FROM learner_profile WHERE id='$learner_id'";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_array($result);
+            // $ins_id = $row['id'];
+            return $row;
+        } else {
+            return false;
+        }
     }
 }

@@ -233,4 +233,39 @@ class User
             header("location: profile.php?user_id=$user_id");
         }
     }
+
+    public function findUserByLearnerID($learner_id){
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT 
+                (
+                    SELECT user.first_name
+                    FROM user
+                    WHERE user.id = learner_profile.user_id
+                ) AS first_name,
+                (
+                    SELECT user.last_name
+                    FROM user
+                    WHERE user.id = learner_profile.user_id
+                )AS last_name,
+                (
+                    SELECT user.email
+                    FROM user
+                    WHERE user.id = learner_profile.user_id
+                )AS email
+                FROM `learner_profile` 
+                WHERE id = '$learner_id'";
+
+
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_array($result);
+            // $ins_id = $row['id'];
+            return $row;
+        } else {
+            return false;
+        }
+    }
 }

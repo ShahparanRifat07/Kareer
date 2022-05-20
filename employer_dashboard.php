@@ -88,8 +88,7 @@ $industry_name = $employer['industry_name'];
                     <p><strong><?php echo $industry_name ?></strong></p>
                     <p><?php echo $description ?></p>
 
-                    <a href="" class="btn btn-dark">View Profile</a>
-                    <a href="" class="btn btn-dark">Edit Profile</a>
+                    <a href="" class="btn btn-dark btn-rounded">Follow</a>
                 </div>
             </div>
         </div>
@@ -145,7 +144,7 @@ $industry_name = $employer['industry_name'];
                                             </div>
                                         </div>
                                         <div class="col-md-7">
-                                            <a href="<?php echo $row['id'] ?>" class="text-dark">
+                                            <a href="job_details.php?job_id=<?php echo $row['id'] ?>" class="text-dark">
                                                 <h5><?php echo $row['title'] ?></h5>
                                             </a>
                                             <a href="<?php echo $employe_id ?>" class="text-dark">
@@ -154,7 +153,7 @@ $industry_name = $employer['industry_name'];
                                             <p><?php echo $location['location'] ?> (<?php echo $type['type'] ?>)</p>
                                         </div>
                                         <div class="col-md-3">
-                                            <a href="" class="btn btn-dark btn-sm">view job Applicants</a>
+                                            <a href="show_job_applicants.php?job_id=<?php echo $row['id'] ?>" class="btn btn-dark btn-sm">view job Applicants</a>
                                         </div>
                                     </div>
                                 </div>

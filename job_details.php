@@ -27,6 +27,7 @@ if (isset($_GET['job_id'])) {
 $us = new User();
 $learner = new Learner();
 $job = new Job();
+$emp = new Employer();
 $curr_job = "";
 if ($job->findJobDetailsByJobID($job_id) != null) {
     $curr_job = $job->findJobDetailsByJobID($job_id);
@@ -37,6 +38,11 @@ $learner_id = "";
 if ($learner->findLearnerByUserID($user_id) != false) {
     $current_learner = $learner->findLearnerByUserID($user_id);
     $learner_id = $current_learner['id'];
+}
+
+$employer = "";
+if($emp->findEmployerByUserID($user_id) != null){
+    $employer = $emp->findEmployerByUserID($user_id);
 }
 
 
@@ -103,18 +109,20 @@ if ($learner->findLearnerByUserID($user_id) != false) {
                     <p><strong>Job Opening:</strong> <?php echo $curr_job['people'] ?> peoeple</p>
 
                     <?php
-                    if ($job->checkIfAlreadyApplyToJob($job_id, $learner_id) == true) {
+                    if ($job->checkIfJobPostOwnsByTheCurrentUser($user_id,$curr_job['id']) == false) {
+                        if ($job->checkIfAlreadyApplyToJob($job_id, $learner_id) == true) {
                     ?>
-                        <div class="mt-4 mb-4">
-                            <button class="btn btn-dark btn-lg btn-rounded" disabled>Applied</button>
-                        </div>
+                            <div class="mt-4 mb-4">
+                                <button class="btn btn-dark btn-lg btn-rounded" disabled>Applied</button>
+                            </div>
+                        <?php
+                        } else {
+                        ?>
+                            <div class="mt-4 mb-4">
+                                <a onclick="wannaApply()" href="job_apply.php?job_id=<?php echo $curr_job['id'] ?>" class="btn btn-dark btn-lg btn-rounded">Apply</a>
+                            </div>
                     <?php
-                    } else {
-                    ?>
-                        <div class="mt-4 mb-4">
-                            <a onclick="wannaApply()" href="job_apply.php?job_id=<?php echo $curr_job['id'] ?>" class="btn btn-dark btn-lg btn-rounded">Apply</a>
-                        </div>
-                    <?php
+                        }
                     }
                     ?>
                     <hr>

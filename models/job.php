@@ -189,7 +189,7 @@ class Job
         $db = new Database();
         $con = $db->connect_db();
 
-        $query = "SELECT job.id,job.title,job.created_time,emp.company_name,job_type.type,location.location,emp.picture,job.minimum,job.maximum,job.description,job_schedule.schedule,job.people,industry.name,emp.website,company_size.size
+        $query = "SELECT job.id,job.employe_id,job.title,job.created_time,emp.company_name,job_type.type,location.location,emp.picture,job.minimum,job.maximum,job.description,job_schedule.schedule,job.people,industry.name,emp.website,company_size.size
                     FROM job
                     JOIN employer_profile AS emp
                     ON job.employe_id = emp.id
@@ -240,6 +240,54 @@ class Job
             }
         }else{
             echo "You already applied to this job";
+        }
+    }
+
+    public function checkIfJobPostOwnsByTheCurrentUser($user_id,$job_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * 
+                    FROM job
+                    JOIN employer_profile
+                    ON job.employe_id = employer_profile.id
+                    LEFT JOIN user
+                    ON employer_profile.user_id = user.id
+                    WHERE user.id = '$user_id' AND job.id = '$job_id'";
+        $result = mysqli_query($con, $query);
+        if(mysqli_num_rows($result) == 1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+
+    public function callLearnerForInterview($data,$learner_id,$job_id){
+        $date = $data['date'];
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "UPDATE job_apply SET job_call = 1, meeting_time = '$data' WHERE learner_id = '$learner_id' AND job_id = '$job_id'";
+        $result = mysqli_query($con, $query);
+
+        if($result){
+            header("location: show_job_applicants.php?job_id=$job_id");
+        }
+    }
+
+    public function checkIfLearnerIsCalled($learner_id,$job_id){
+
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM job_apply WHERE learner_id = '$learner_id' AND job_id = '$job_id'";
+        $result = mysqli_query($con, $query);
+        if(mysqli_num_rows($result) == 1){
+            $row = mysqli_fetch_assoc($result);
+            if($row['job_call'] == true){
+                return true;
+            }else{
+                return false;
+            }
         }
     }
 }
