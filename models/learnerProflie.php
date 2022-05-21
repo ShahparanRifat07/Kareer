@@ -256,4 +256,41 @@ class Learner
             return false;
         }
     }
+
+    public function followLearner($user_id,$follower_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query =  "INSERT INTO follow_learner (user_id,follower_id)
+                    VALUES('$user_id','$follower_id');";
+        $result = mysqli_query($con, $query);
+        if ($result) {
+            header("location: profile.php?user_id=$user_id");
+        }
+
+    }
+
+    public function checkIfFollowed($user_id,$follower_id){
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT * FROM follow_learner WHERE user_id='$user_id'AND follower_id='$follower_id'";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function unfollowLearner($user_id,$follower_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query =  "DELETE FROM follow_learner WHERE user_id= '$user_id' AND follower_id = '$follower_id'";
+        $result = mysqli_query($con, $query);
+        if ($result) {
+            header("location: profile.php?user_id=$user_id");
+        }
+
+    }
 }

@@ -121,6 +121,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <label class="form-label" for="form6Example3">Interview Date*</label>
                     </div>
 
+                    <div class="form-outline mb-4">
+                        <input name="link" type="url" id="form6Example3" class="form-control" required placeholder="https://zoom.us/j/5551112222"/>
+                        <label class="form-label" for="form6Example3">Meeting Link*</label>
+                    </div>
+
                     <hr>
 
                     <!-- Submit button -->

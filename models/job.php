@@ -265,9 +265,10 @@ class Job
 
     public function callLearnerForInterview($data,$learner_id,$job_id){
         $date = $data['date'];
+        $meeting_link = $data['link'];
         $db = new Database();
         $con = $db->connect_db();
-        $query = "UPDATE job_apply SET job_call = 1, meeting_time = '$data' WHERE learner_id = '$learner_id' AND job_id = '$job_id'";
+        $query = "UPDATE job_apply SET job_call = 1, meeting_time = '$date',meet_link = '$meeting_link' WHERE learner_id = '$learner_id' AND job_id = '$job_id'";
         $result = mysqli_query($con, $query);
 
         if($result){

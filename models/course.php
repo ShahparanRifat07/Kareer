@@ -394,4 +394,34 @@ class Course
         }
 
     }
+
+    public function checkIfTheCourseIsComplete($course_id, $learner_id){
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT SUM(con.point) AS total_points, complete.learner_id as learner_id, user.id as user_id,learner_profile.profile_pic,user.first_name,user.last_name,cor.point_needed
+                    FROM complete_content as complete
+                    LEFT JOIN content as con
+                    ON complete.content_id = con.id
+                    JOIN section as sec
+                    ON con.section_id = sec.id
+                    JOIN course as cor
+                    ON sec.course_id = cor.id
+                    LEFT JOIN learner_profile
+                    ON complete.learner_id = learner_profile.id
+                    JOIN user
+                    ON learner_profile.user_id = user.id
+                    WHERE complete.learner_id='$learner_id' AND cor.id='$course_id'";
+
+        $result = mysqli_query($con, $query);
+
+        if(mysqli_num_rows($result) == 1){
+            $row = mysqli_fetch_assoc($result);
+            if($row['total_points'] >= $row['point_needed']){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
 }

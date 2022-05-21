@@ -112,11 +112,11 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                 </li>
             </ul>
             <div class="col-md-8 ms-3">
-                <form class="d-flex input-group w-auto my-auto ">
-                    <input autocomplete="off" type="search" class="form-control rounded" placeholder="Search" aria-describedby="search-addon" />
-                    <span class="input-group-text border-0" id="search-addon">
+                <form method="GET" action="search.php" class="d-flex input-group w-auto my-auto ">
+                    <input name="search" autocomplete="off" type="search" class="form-control rounded" placeholder="Search" aria-describedby="search-addon" />
+                    <button type= submit class="input-group-text border-0" id="search-addon">
                         <i class="fas fa-search"></i>
-                    </span>
+                    </button>
                 </form>
             </div>
         </div>
@@ -262,6 +262,13 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
 
                         <li>
                             <a class="dropdown-item" href="profile.php?user_id=<?php echo $id ?>">Public Profile</a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a class="dropdown-item" href="applied_jobs.php">Applied Jobs</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="job_calls.php">Calls</a>
                         </li>
                         <hr>
                         <li>

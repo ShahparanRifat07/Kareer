@@ -4,6 +4,7 @@ require_once("models/database.php");
 require_once("models/user.php");
 require_once("models/learnerProflie.php");
 require_once("models/employer.php");
+require_once("models/course.php");
 require_once("models/job.php");
 
 session_start();
@@ -33,6 +34,7 @@ if ($current_user == null) {
 }
 $learner = new Learner();
 $current_learner = $learner->findLearnerByUserID($user_id);
+$learner_id = $current_learner['id'];
 
 $current_user_education = $user->findEducation($user_id);
 
@@ -44,6 +46,8 @@ $user_school = "";
 if (isset($current_user_education['school'])) {
     $user_school = $current_user_education['school'];
 }
+
+$cor = new Course();
 
 $total_points = $learner->findTotalPointsOfLearner($current_learner['id']);
 
@@ -103,6 +107,11 @@ $total_points = $learner->findTotalPointsOfLearner($current_learner['id']);
             padding: 0;
             /* overflow: hidden; */
         }
+
+        .centerProfie {
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -135,7 +144,20 @@ $total_points = $learner->findTotalPointsOfLearner($current_learner['id']);
                             <?php
                             }
                             ?>
-                            <a href="" class="btn btn-dark btn-rounded">Follow</a>
+                            <?php
+                            if ($id != $user_id) {
+
+                                if ($learner->checkIfFollowed($user_id, $id) == false) {
+                            ?>
+                                    <a href="follow_learner.php?user_id=<?php echo $user_id ?>" class="btn btn-dark btn-rounded">Follow</a>
+                                <?php
+                                } else {
+                                ?>
+                                    <a href="unfollow_learner.php?user_id=<?php echo $user_id ?>" class="btn btn-primary btn-rounded">Unfollow</a>
+                            <?php
+                                }
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -278,51 +300,57 @@ $total_points = $learner->findTotalPointsOfLearner($current_learner['id']);
                         <a href="" class="btn btn-dark btn-sm centerDiv">View All</a>
                     </div>
                     <hr>
-                    <div class="card">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="card marginCard">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/640px-Python-logo-notext.svg.png" alt="" height="130px">
-                                </div>
-                            </div>
-                            <div class="col-md-7">
-                                <a href="<?php echo $row['id'] ?>" class="text-dark">
-                                    <h5>Learn Python</h5>
-                                </a>
-                                <a href="<?php echo $employe_id ?>" class="text-dark">
-                                    <p>Shahparan Rifat</p>
-                                </a>
-                                <p>Completed: 2019</p>
-                            </div>
-                            <div class="col-md-3">
-                                <a href="" class="btn btn-dark btn-sm">view course</a>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
 
-                    <div class="card">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="card marginCard">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/640px-Python-logo-notext.svg.png" alt="" height="130px">
+                    <?php
+
+                    $query = "SELECT course.id as course_id, course.title,course.picture,user.first_name,user.last_name
+                    FROM course_transaction as cort
+                    LEFT JOIN course
+                    ON cort.course_id = course.id
+                    LEFT JOIN instructor_profile
+                    ON instructor_profile.id = course.instructor_id
+                    LEFT JOIN user
+                    ON user.id = instructor_profile.user_id
+                    WHERE cort.learner_id = '$learner_id' ";
+                    $result = mysqli_query($con, $query);
+
+                    if (mysqli_num_rows($result) > 0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $is_completed = $cor->checkIfTheCourseIsComplete($row['course_id'], $learner_id);
+                            if ($is_completed == true) {
+                    ?>
+
+                                <div class="card">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="card marginCard">
+                                                <img src="<?php echo $row['picture'] ?>" alt="" height="130px">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <a href="course_details.php?id=<?php echo $row['course_id'] ?>" class="text-dark">
+                                                <h5><?php echo $row['title'] ?></h5>
+                                            </a>
+                                            <a href="<?php echo $employe_id ?>" class="text-dark">
+                                                <p><?php echo $row['first_name'] ?> <?php echo $row['last_name'] ?></p>
+                                            </a>
+                                            <p>Completed</p>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href="" class="btn btn-dark btn-sm">view course</a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-7">
-                                <a href="<?php echo $row['id'] ?>" class="text-dark">
-                                    <h5>Learn Python</h5>
-                                </a>
-                                <a href="<?php echo $employe_id ?>" class="text-dark">
-                                    <p>Shahparan Rifat</p>
-                                </a>
-                                <p>Completed: 2019</p>
-                            </div>
-                            <div class="col-md-3">
-                                <a href="" class="btn btn-dark btn-sm">view course</a>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
+                                <hr>
+
+                    <?php
+                            }
+                        }
+                    }
+
+                    ?>
+
+
                 </div>
 
 
@@ -378,6 +406,110 @@ $total_points = $learner->findTotalPointsOfLearner($current_learner['id']);
                 <?php
                 }
                 ?>
+
+                <div class="card mt-3">
+                    <h5>Meet more learners like you</h5>
+                    <hr class="noPaddingMargin mb-3">
+
+                    <?php
+
+                    $query = "SELECT user.id,user.first_name,user.last_name,learner_profile.profile_pic
+                                FROM learner_profile
+                                JOIN user
+                                ON learner_profile.user_id = user.id
+                                WHERE user.id != '$id' AND user.id NOT IN (
+                                    SELECT user_id
+                                    FROM follow_learner
+                                    WHERE follow_learner.follower_id = '$id'
+                                    )
+                                ORDER BY user.created_time DESC
+                                LIMIT 6";
+                    $result = mysqli_query($con, $query);
+
+                    if (mysqli_num_rows($result) > 0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+
+                    ?>
+
+                            <div class="mt-2">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="<?php echo $row['profile_pic'] ?>" alt="" height="50px" width="50px">
+                                    </div>
+                                    <div class="col-md-10 centerProfie">
+                                        <a href="profile.php?user_id=<?php echo $row['id'] ?>">
+                                            <h6><?php echo $row['first_name'] ?> <?php echo $row['last_name'] ?></h6>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="noPaddingMargin mt-1">
+
+                    <?php
+                        }
+                    }
+                    ?>
+
+                </div>
+
+
+
+                <?php
+                if ($id == $user_id) {
+                ?>
+
+                    <div class="card mt-3">
+                        <h5>You are following</h5>
+                        <hr class="noPaddingMargin mb-3">
+
+                        <?php
+
+                        $query = "SELECT user.id,user.first_name,user.last_name,learner_profile.profile_pic
+                                FROM learner_profile
+                                JOIN user
+                                ON learner_profile.user_id = user.id
+                                WHERE user.id != '$id' AND user.id IN (
+                                    SELECT user_id
+                                    FROM follow_learner
+                                    WHERE follow_learner.follower_id = '$id'
+                                    )
+                                ORDER BY user.created_time DESC
+                                LIMIT 6";
+
+                        $result = mysqli_query($con, $query);
+
+                        if (mysqli_num_rows($result) > 0) {
+                            while ($row = mysqli_fetch_assoc($result)) {
+
+                        ?>
+
+                                <div class="mt-2">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <img src="<?php echo $row['profile_pic'] ?>" alt="" height="50px" width="50px">
+                                        </div>
+                                        <div class="col-md-10 centerProfie">
+                                            <a href="profile.php?user_id=<?php echo $row['id'] ?>">
+                                                <h6><?php echo $row['first_name'] ?> <?php echo $row['last_name'] ?></h6>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="noPaddingMargin mt-1">
+
+                        <?php
+                            }
+                        }
+                        ?>
+
+                    </div>
+
+                <?php
+                }
+                ?>
+
+
+
             </div>
         </div>
 
