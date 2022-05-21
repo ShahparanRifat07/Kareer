@@ -24,6 +24,7 @@ if ($admin->is_admin($id) == false) {
 // }
 
 $value = $admin->findLast7DayUser();
+$value2 = $admin->findLast30daysRevenue();
 
 
 
@@ -86,10 +87,10 @@ $value = $admin->findLast7DayUser();
         <div class="card bg-dark mt-3 mb-3">
             <ul>
                 <a class="text-warning" href="admin_dashboard.php">Dashboard</a>
-                <a class="text-light" href="">Learner</a>
+                <!-- <a class="text-light" href="">Learner</a> -->
                 <a class="text-light" href="admin_course.php">Course</a>
-                <a class="text-light" href="">Instructor</a>
-                <a class="text-light" href="">Employer</a>
+                <!-- <a class="text-light" href="">Instructor</a> -->
+                <!-- <a class="text-light" href="">Employer</a> -->
                 <a class="text-light" href="">Job</a>
             </ul>
         </div>
@@ -99,19 +100,19 @@ $value = $admin->findLast7DayUser();
                 <div class="col-md-4 mb-3">
                     <div class="card">
                         <h5>Total Users</h5>
-                        <h2>300</h2>
+                        <h2><?php echo $admin->findTotalUser() ?></h2>
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
                     <div class="card">
                         <h5>Total Revenue</h5>
-                        <h2>$400</h2>
+                        <h2>$<?php echo $admin->findTotalRevenue() ?></h2>
                     </div>
                 </div>
                 <div class="col-md-4 mb-3">
                     <div class="card">
                         <h5>Total Courses</h5>
-                        <h2>500</h2>
+                        <h2><?php echo $admin->findTotalCourses() ?></h2>
                     </div>
                 </div>
             </div>
@@ -171,6 +172,14 @@ $value = $admin->findLast7DayUser();
                 legend: {
                     display: false
                 },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                            max: 10
+                        }
+                    }],
+                },
                 title: {
                     display: true,
                     text: "Users resgisterd in last 7 days"
@@ -179,8 +188,17 @@ $value = $admin->findLast7DayUser();
         });
 
 
-        var xxValues = [50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150];
-        var yyValues = [7, 8, 8, 9, 9, 9, 10, 11, 14, 14, 15];
+        var xxValues = [];
+        var yyValues = [];
+
+        <?php
+        foreach ($value2 as $key => $value) {
+        ?>
+            xxValues.push(<?php echo $key ?>);
+            yyValues.push(<?php echo $value ?>);
+        <?php
+        }
+        ?>
 
         new Chart("myChart2", {
             type: "line",
@@ -201,14 +219,14 @@ $value = $admin->findLast7DayUser();
                 scales: {
                     yAxes: [{
                         ticks: {
-                            min: 6,
-                            max: 16
+                            min: 0,
+                            max: 100
                         }
                     }],
                 },
                 title: {
                     display: true,
-                    text: "Users resgisterd in last 7 days"
+                    text: "Revenue in this month days"
                 }
             }
         });

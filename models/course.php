@@ -250,7 +250,8 @@ class Course
         }
     }
 
-    public function unlinkFile($id){
+    public function unlinkFile($id)
+    {
         $db = new Database();
         $con = $db->connect_db();
         $query = "SELECT * FROM course WHERE id='$id'";
@@ -289,31 +290,34 @@ class Course
         }
     }
 
-    public function insertCourseView($course_id){
+    public function insertCourseView($course_id)
+    {
         $db = new Database();
         $con = $db->connect_db();
         $query = "INSERT INTO course_view (course_id) VALUES ('$course_id')";
         $result = mysqli_query($con, $query);
     }
 
-    public function isPreviewActive($content_id){
+    public function isPreviewActive($content_id)
+    {
         $db = new Database();
         $con = $db->connect_db();
         $query = "SELECT * FROM content WHERE id='$content_id'";
         $result = mysqli_query($con, $query);
 
-        if (mysqli_num_rows($result) == 1){
+        if (mysqli_num_rows($result) == 1) {
             $row = mysqli_fetch_assoc($result);
-            if($row['is_preview'] == true){
+            if ($row['is_preview'] == true) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
     }
 
 
-    public function findCurrentCoursePoint($course_id){
+    public function findCurrentCoursePoint($course_id)
+    {
         $db = new Database();
         $con = $db->connect_db();
 
@@ -336,46 +340,49 @@ class Course
     }
 
 
-    public function completeCourseContent($content_id,$user_id){
+    public function completeCourseContent($content_id, $user_id)
+    {
         $db = new Database();
         $con = $db->connect_db();
 
         $learner = new Learner();
         $learner_object = $learner->findLearnerByUserID($user_id);
-        $learner_id= $learner_object['id'];
-        if($learner_id != null){
+        $learner_id = $learner_object['id'];
+        if ($learner_id != null) {
             $query = "INSERT INTO complete_content (learner_id,content_id) VALUES ('$learner_id','$content_id')";
             $result = mysqli_query($con, $query);
 
-            if($result){
+            if ($result) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
     }
 
 
-    public function checkIfContentComplete($content_id,$user_id){
+    public function checkIfContentComplete($content_id, $user_id)
+    {
         $db = new Database();
         $con = $db->connect_db();
         $learner = new Learner();
         $learner_object = $learner->findLearnerByUserID($user_id);
-        $learner_id= $learner_object['id'];
+        $learner_id = $learner_object['id'];
 
-        if($learner_id != null){
+        if ($learner_id != null) {
             $query = "SELECT * FROM complete_content WHERE learner_id='$learner_id' AND content_id='$content_id'";
             $result = mysqli_query($con, $query);
 
-            if(mysqli_num_rows($result) == 1){
+            if (mysqli_num_rows($result) == 1) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
     }
 
-    public function findHowManyPointsCompleted($course_id,$learner_id){
+    public function findHowManyPointsCompleted($course_id, $learner_id)
+    {
         $db = new Database();
         $con = $db->connect_db();
         $query = "SELECT SUM(con.point) AS completed_point
@@ -388,14 +395,14 @@ class Course
                     ON sec.course_id = cor.id
                     WHERE complete.learner_id = '$learner_id' AND cor.id='$course_id';";
         $result = mysqli_query($con, $query);
-        if(mysqli_num_rows($result) == 1){
+        if (mysqli_num_rows($result) == 1) {
             $row = mysqli_fetch_assoc($result);
             return $row['completed_point'];
         }
-
     }
 
-    public function checkIfTheCourseIsComplete($course_id, $learner_id){
+    public function checkIfTheCourseIsComplete($course_id, $learner_id)
+    {
         $db = new Database();
         $con = $db->connect_db();
 
@@ -415,13 +422,39 @@ class Course
 
         $result = mysqli_query($con, $query);
 
-        if(mysqli_num_rows($result) == 1){
+        if (mysqli_num_rows($result) == 1) {
             $row = mysqli_fetch_assoc($result);
-            if($row['total_points'] >= $row['point_needed']){
+            if ($row['total_points'] >= $row['point_needed']) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
+        }
+    }
+
+
+    public function rateCourse($data,$course_id,$learner_id){
+        $rating = $data['rate'];
+        $db = new Database();
+        $con = $db->connect_db();
+        $query =  "INSERT INTO course_rating (course_id,learner_id,rating)
+                    VALUES('$course_id','$learner_id','$rating');";
+        $result = mysqli_query($con, $query);
+        if ($result) {
+            header("location: course_details.php?id=$course_id");
+        }
+    }
+
+    public function checkIfCourseRatedByTheLearner($course_id,$learner_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query =  "SELECT * FROM course_rating WHERE course_id='$course_id' AND learner_id='$learner_id' ;";
+        $result = mysqli_query($con, $query);
+        if (mysqli_num_rows($result)) {
+            $row = mysqli_fetch_assoc($result);
+            return $row;
+        }else{
+            return false;
         }
     }
 }

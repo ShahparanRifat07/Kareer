@@ -153,5 +153,45 @@ class Employer
         }
     }
 
+    public function findTotalJobPost($employer_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT COUNT(id) AS total_post 
+                    FROM `job` 
+                    WHERE employe_id = '$employer_id'";
+
+        $result = mysqli_query($con,$query);
+        if(mysqli_num_rows($result) == 1){
+            $row = mysqli_fetch_array($result);
+            return $row['total_post'];
+        }else{
+            echo "0";
+        }
+    }
+
+
+    public function findTotalJobApplicants($employer_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT COUNT(job_apply.id) AS total_applicants
+                    FROM job_apply
+                    JOIN job
+                    ON job_apply.job_id = job.id
+                    JOIN employer_profile
+                    ON job.employe_id = employer_profile.id
+                    WHERE employer_profile.id = '$employer_id'";
+
+        $result = mysqli_query($con,$query);
+        if(mysqli_num_rows($result) == 1){
+            $row = mysqli_fetch_array($result);
+            return $row['total_applicants'];
+        }else{
+            echo "0";
+        }
+    }
+
+
+    
+
     
 }

@@ -26,12 +26,12 @@ $us = new User();
 $user = $us->findUserByUserId($id);
 $learner = new Learner();
 $learner_object = $learner->findLearnerByUserID($id);
-$learner_id= $learner_object['id'];
+$learner_id = $learner_object['id'];
 $cor = new Course();
 $course = "";
-if($cor->findCourseById($course_id)!==null){
+if ($cor->findCourseById($course_id) !== null) {
     $course = $cor->findCourseById($course_id);
-}else{
+} else {
     header("location: 404.php");
 }
 $cor->insertCourseView($course['id']);
@@ -157,9 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div>
                 <h3><?php echo $course['title']  ?> ( <i class="fa-solid fa-star"></i><?php echo $total_point  ?>)</h3>
                 <?php
-                if($is_bought == true){
+                if ($is_bought == true) {
                 ?>
-                <h6>Point completed: <i class="fa-solid fa-star"></i><?php echo $cor->findHowManyPointsCompleted($course['id'],$learner_id)?></h6>
+                    <h6>Point completed: <i class="fa-solid fa-star"></i><?php echo $cor->findHowManyPointsCompleted($course['id'], $learner_id) ?></h6>
                 <?php
                 }
                 ?>
@@ -260,39 +260,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     } elseif ($us->checkIFAdmin($id) != true && $course_instructor_id != $instructor_id && $is_bought != true) {
                     ?>
                         <a id=addSection2 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">Add to wishlist</a>
-                        <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">Buy course</a>
+                        <a id=addSection3 href="course_checkout.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">Buy course</a>
                     <?php
                     } elseif ($is_bought == true) {
                     ?>
                         <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View Course Discussion</a>
-                        <div>
 
-                            <form method="POST" action="" class="modal-rating">
-                                <div class="overlay"></div>
+                        <?php
+                        if ($cor->checkIfCourseRatedByTheLearner($course_id, $learner_id) == false) {
+                        ?>
+                            <div>
+                                <form method="POST" action="course_rating.php?course_id=<?php echo $course_id ?>&learner_id=<?php echo $learner_id?>" class="modal-rating">
+                                    <div class="overlay"></div>
 
-                                <h2>Rate this course</h2>
+                                    <h2>Rate this course</h2>
 
-                                <div class="rating">
-                                    <input type="radio" name="rate" id="rate-1" value="1" required>
-                                    <label for="rate-1">1</label>
+                                    <div class="rating">
+                                        <input type="radio" name="rate" id="rate-1" value="1" required>
+                                        <label for="rate-1">1</label>
 
-                                    <input type="radio" name="rate" id="rate-2" value="2" required>
-                                    <label for="rate-2">2</label>
+                                        <input type="radio" name="rate" id="rate-2" value="2" required>
+                                        <label for="rate-2">2</label>
 
-                                    <input type="radio" name="rate" id="rate-3" value="3" required>
-                                    <label for="rate-3">3</label>
+                                        <input type="radio" name="rate" id="rate-3" value="3" required>
+                                        <label for="rate-3">3</label>
 
-                                    <input type="radio" name="rate" id="rate-4" value="4" required>
-                                    <label for="rate-4">4</label>
+                                        <input type="radio" name="rate" id="rate-4" value="4" required>
+                                        <label for="rate-4">4</label>
 
-                                    <input type="radio" name="rate" id="rate-5" value="5" required>
-                                    <label for="rate-5">5</label>
+                                        <input type="radio" name="rate" id="rate-5" value="5" required>
+                                        <label for="rate-5">5</label>
 
-                                </div>
-                                <button type="submit">Submit</button>
-                            </form>
+                                    </div>
+                                    <button type="submit">Submit</button>
+                                </form>
+                            </div>
+                        <?php
+                        } else {
+                            $check_rate_given = $cor->checkIfCourseRatedByTheLearner($course_id, $learner_id);
+                            $rating = $check_rate_given['rating'];
+                        ?>
+                            <div class=" mt-2 ms-auto me-auto">
+                                <p class="ms-auto me-auto">You gave <?php echo $rating ?><i class="fa-solid fa-star"></i> to this course </p>
+                            </div>
+                        <?php
+                        }
+                        ?>
 
-                        </div>
                     <?php
                     }
                     ?>

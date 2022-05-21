@@ -88,7 +88,7 @@ $industry_name = $employer['industry_name'];
                     <p><strong><?php echo $industry_name ?></strong></p>
                     <p><?php echo $description ?></p>
 
-                    <a href="" class="btn btn-dark btn-rounded">Follow</a>
+                    <!-- <a href="" class="btn btn-dark btn-rounded">Follow</a> -->
                 </div>
             </div>
         </div>
@@ -101,17 +101,17 @@ $industry_name = $employer['industry_name'];
                         <h3>Ananlytics</h3>
                         <hr>
                         <div>
-                            <h4>30</h4>
+                            <h4><?php echo $emp->findTotalJobPost($employe_id) ?></h4>
                             <p>job posts</p>
                         </div>
                         <hr>
                         <div>
-                            <h4>1200</h4>
+                            <h4><?php echo $emp->findTotalJobApplicants($employe_id)?></h4>
                             <p>Total Applicants</p>
                         </div>
                         <hr>
                         <div>
-                            <h4>750</h4>
+                            <h4>0</h4>
                             <p>Followers</p>
                         </div>
                     </div>

@@ -97,7 +97,7 @@ $job = new Job();
                             </a>
                             <p><?php echo $row['company_name']?></p>
                             <p><?php echo $row['location']?> <span> - (<?php echo $row['type']?></span>) </p>
-                            <p><?php echo $time_ago ?> (1 applicant)</p>
+                            <p><?php echo $time_ago ?> <span class="text-warning" >(<?php echo $job->findTotalJobApplicantsByJobID($row['id'])?> Applicants)</span> </p>
                         </div>
                     </div>
                 </div>

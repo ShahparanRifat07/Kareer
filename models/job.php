@@ -291,4 +291,25 @@ class Job
             }
         }
     }
+
+
+    public function findTotalJobApplicantsByJobID($job_id){
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT COUNT(job_apply.id) as total_apply
+        FROM job_apply
+        JOIN job
+        ON job_apply.job_id = job.id
+        JOIN employer_profile
+        ON job.employe_id = employer_profile.id
+        WHERE job.id = '$job_id'";
+
+        $result = mysqli_query($con,$query);
+        if(mysqli_num_rows($result) == 1){
+            $row = mysqli_fetch_array($result);
+            return $row['total_apply'];
+        }else{
+            return 0;
+        }
+    }
 }

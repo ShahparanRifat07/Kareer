@@ -99,7 +99,7 @@ if($emp->findEmployerByUserID($user_id) != null){
                 <div class="col-md-9 mt-2 mb-4">
                     <h2><?php echo $curr_job['title'] ?></h2>
                     <h5><?php echo $curr_job['company_name'] ?></h5>
-                    <p><?php echo $curr_job['location'] ?>, <?php echo $time_ago ?> (5 applicants)</p>
+                    <p><?php echo $curr_job['location'] ?>, <?php echo $time_ago ?> <span class="text-warning" >(<?php echo $job->findTotalJobApplicantsByJobID($curr_job['id'])?> Applicants)</span></p>
                     <hr>
                     <p><strong>Job type:</strong> <?php echo $curr_job['type'] ?></p>
                     <p><strong>Employess:</strong> <?php echo $curr_job['size'] ?> employess</p>

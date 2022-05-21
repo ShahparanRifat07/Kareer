@@ -212,7 +212,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                             </div>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">My Courses</a>
+                            <a class="dropdown-item" href="my_courses.php">My Courses</a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">Wishlist</a>
@@ -272,7 +272,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                         </li>
                         <hr>
                         <li>
-                            <a class="dropdown-item" href="#">Purchase history</a>
+                            <a class="dropdown-item" href="purchase_history.php">Purchase history</a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">Settings</a>

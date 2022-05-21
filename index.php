@@ -158,7 +158,7 @@ $learner = new Learner();
                 <div id="section2">
                     <div class="mt-5 mb-3">
                         <h2>Let's start learning, <?php echo $user['last_name']  ?></h2>
-                        <a href="" class="text-dark">My learning</a>
+                        <a href="my_courses.php" class="text-dark">My learning</a>
                     </div>
                     <div>
                         <div class="row">
@@ -339,73 +339,57 @@ $learner = new Learner();
             </div>
             <div>
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="card mb-3 c-full">
-                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                <img src="https://www.softwaretestinghelp.com/wp-content/qa/uploads/2020/12/Python-Programming.png" class="img-fluid" />
-                                <a href="#!">
-                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                                </a>
-                            </div>
-                            <div class="card-body c-body">
-                                <h6 class="card-title">Learn Python</h6>
-                                <p class="card-text">Shahparn Rifat</p>
-                                <p class="card-text">Price: $18</p>
-                                <a href="#!" class="d-flex justify-content-center btn btn-dark btn-sm">Enroll</a>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="col-md-3">
-                        <div class="card mb-3 c-full">
-                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                <img src="https://www.softwaretestinghelp.com/wp-content/qa/uploads/2020/12/Python-Programming.png" class="img-fluid" />
-                                <a href="#!">
-                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                                </a>
-                            </div>
-                            <div class="card-body c-body">
-                                <h6 class="card-title">Learn Python</h6>
-                                <p class="card-text">Shahparn Rifat</p>
-                                <p class="card-text">Price: $18</p>
-                                <a href="#!" class="d-flex justify-content-center btn btn-dark btn-sm">Enroll</a>
-                            </div>
-                        </div>
-                    </div>
+                    <?php
 
-                    <div class="col-md-3">
-                        <div class="card mb-3 c-full">
-                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                <img src="https://www.softwaretestinghelp.com/wp-content/qa/uploads/2020/12/Python-Programming.png" class="img-fluid" />
-                                <a href="#!">
-                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                                </a>
-                            </div>
-                            <div class="card-body c-body">
-                                <h6 class="card-title">Learn Python</h6>
-                                <p class="card-text">Shahparn Rifat</p>
-                                <p class="card-text">Price: $18</p>
-                                <a href="#!" class="d-flex justify-content-center btn btn-dark btn-sm">Enroll</a>
-                            </div>
-                        </div>
-                    </div>
+                    $query = "SELECT SUM(course_rating.rating) AS rating, course.id AS course_id,course.title,course.price,course.picture,user.first_name,user.last_name
+                                FROM course_rating
+                                JOIN course
+                                ON course_rating.course_id = course.id
+                                JOIN instructor_profile
+                                ON course.instructor_id = instructor_profile.id
+                                JOIN user
+                                ON instructor_profile.user_id = user.id
+                                GROUP BY rating DESC
+                                LIMIT 4";
+                    $result = mysqli_query($con, $query);
+                    if (mysqli_num_rows($result) > 0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $is_bought = $learner->checkIfCourseBoughtByUser($row['course_id'], $user_id);
 
-                    <div class="col-md-3">
-                        <div class="card mb-3 c-full">
-                            <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                                <img src="https://www.softwaretestinghelp.com/wp-content/qa/uploads/2020/12/Python-Programming.png" class="img-fluid" />
-                                <a href="#!">
-                                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
-                                </a>
+                    ?>
+                            <div class="col-md-3">
+                                <div class="card mb-3 c-full">
+                                    <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                                        <img src="<?php echo $row['picture']?>" class="img-fluid" />
+                                        <a href="#!">
+                                            <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                                        </a>
+                                    </div>
+                                    <div class="card-body c-body">
+                                        <h6 class="card-title"><?php echo $row['title']?></h6>
+                                        <p class="card-text"><?php echo $row['first_name']?> <?php echo $row['last_name']?></p>
+                                        <p class="card-text">Price: $<?php echo $row['price']?></p>
+                                        <?php
+                                        if ($is_bought2 == false) {
+                                        ?>
+                                            <a href="course_checkout.php?course_id=<?php echo $row['course_id'] ?>" class="d-flex justify-content-center btn btn-dark btn-sm">Enroll</a>
+                                        <?php
+                                        } else {
+                                        ?>
+                                            <a href="course_details.php?id=<?php echo $row['course_id'] ?>" class="d-flex justify-content-center btn btn-light btn-sm">Learn</a>
+                                        <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-body c-body">
-                                <h6 class="card-title">Learn Python</h6>
-                                <p class="card-text">Shahparn Rifat</p>
-                                <p class="card-text">Price: $18</p>
-                                <a href="#!" class="d-flex justify-content-center btn btn-dark btn-sm">Enroll</a>
-                            </div>
-                        </div>
-                    </div>
+                    <?php
+                        }
+                    }
+
+                    ?>
+
 
                 </div>
             </div>

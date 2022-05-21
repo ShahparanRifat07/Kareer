@@ -85,10 +85,10 @@ $cor = new Course();
         <div class="card bg-dark mt-3 mb-3">
             <ul>
                 <a class="text-light" href="admin_dashboard.php">Dashboard</a>
-                <a class="text-light" href="">Learner</a>
+                <!-- <a class="text-light" href="">Learner</a> -->
                 <a class="text-warning" href="admin_course.php">Course</a>
-                <a class="text-light" href="">Instructor</a>
-                <a class="text-light" href="">Employer</a>
+                <!-- <a class="text-light" href="">Instructor</a> -->
+                <!-- <a class="text-light" href="">Employer</a> -->
                 <a class="text-light" href="">Job</a>
             </ul>
         </div>
