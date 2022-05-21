@@ -23,16 +23,9 @@ $us = new User();
 $cor = new Course();
 $job = new Job();
 $learner = new Learner();
+$current_learner = $learner->findLearnerByUserID($user_id);
+$learner_id = $current_learner['id'];
 
-$category_id = "";
-if (isset($_GET['category_id'])) {
-    $category_id = $_GET['category_id'];
-} else {
-    header("location: index.php");
-}
-
-$cat = new Category();
-$category = $cat->findCategoryById($category_id);
 
 
 ?>
@@ -90,14 +83,13 @@ $category = $cat->findCategoryById($category_id);
     <section id="sec1">
         <div class="container">
             <div class="card noBorderRedius bg-dark mt-3 mb-2">
-                <h1 class="text-light "> <?php echo $category['name']?></h1>
+                <h1 class="text-light ">My Learning</h1>
             </div>
         </div>
     </section>
 
     <section id="sec2" class="mt-5">
         <div class="container ">
-            <h2>Courses</h2>
             <hr>
 
             <div>
@@ -106,14 +98,17 @@ $category = $cat->findCategoryById($category_id);
                     <?php
 
                     $query = "SELECT course.id,instructor_id,title,price,picture,user.first_name,user.last_name
-                                FROM course
-                                JOIN category
-                                ON course.category_id = category.id
-                                JOIN instructor_profile
-                                ON course.instructor_id = instructor_profile.id
-                                JOIN user
-                                ON instructor_profile.user_id = user.id
-                                WHERE category.id = '$category_id'";
+                                    FROM course_transaction
+                                    JOIN course
+                                    ON course_transaction.course_id = course.id
+                                    JOIN learner_profile 
+                                    ON course_transaction.learner_id = learner_profile.id
+                                    JOIN instructor_profile
+                                    ON course.instructor_id = instructor_profile.id
+                                    JOIN user
+                                    ON instructor_profile.user_id = user.id
+                                    WHERE learner_profile.id = '$learner_id'
+                                    ORDER BY transaction_time DESC";
 
                     $result = mysqli_query($con, $query);
                     if (mysqli_num_rows($result) > 0) {

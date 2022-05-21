@@ -121,6 +121,8 @@ class User
         if (mysqli_num_rows($result) == 1) {
             $row = mysqli_fetch_assoc($result);
             return $row;
+        }else{
+            return null;
         }
     }
 
@@ -133,9 +135,137 @@ class User
 
         if (mysqli_num_rows($result) == 1) {
             $row = mysqli_fetch_assoc($result);
-            if($row['is_admin'] == 1){
+            if ($row['is_admin'] == 1) {
                 return true;
             }
+        }
+    }
+
+
+    public function addExperience($data, $user_id)
+    {
+
+        $title = $data['title'];
+        $company_name = $data['company'];
+        $type = $data['type'];
+        $start = $data['start'];
+        $end = $data['end'];
+        $location = $data['location'];
+
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "INSERT INTO experience (user_id,company_name,job_title,job_type,start_time,end_time,location)
+            VALUES('$user_id','$company_name','$title','$type','$start','$end','$location');";
+        $result = mysqli_query($con, $query);
+
+        if ($result) {
+            header("location: profile.php?user_id=$user_id");
+        }
+    }
+
+
+    public function addEducation($data, $user_id)
+    {
+
+        $school = $data['school'];
+        $degree = $data['degree'];
+        $field = $data['field'];
+        $start = $data['start'];
+        $end = $data['end'];
+
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "INSERT INTO education (user_id,school,degree,field,start_time,end_time)
+            VALUES('$user_id','$school','$degree','$field','$start','$end');";
+        $result = mysqli_query($con, $query);
+
+        if ($result) {
+            header("location: profile.php?user_id=$user_id");
+        }
+    }
+
+    public function findEducation($user_id)
+    {
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "SELECT * FROM education WHERE user_id = '$user_id' ORDER BY end_time DESC";
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_assoc($result);
+            return $row;
+        }
+    }
+
+
+    public function addSkills($data, $user_id)
+    {
+
+        $skill = $data['skill'];
+
+        $db = new Database();
+        $con = $db->connect_db();
+        $query =  "INSERT INTO skill (user_id,skill)
+        VALUES('$user_id','$skill');";
+        $result = mysqli_query($con, $query);
+        if ($result) {
+            header("location: profile.php?user_id=$user_id");
+        }
+    }
+
+    public function addProject($data, $user_id)
+    {
+
+        $name = $data['name'];
+        $about = $data['about'];
+        $start = $data['start'];
+        $end = $data['end'];
+        $url = $data['url'];
+
+
+        $db = new Database();
+        $con = $db->connect_db();
+        $query = "INSERT INTO project (user_id,name,about,start_time,end_time,url)
+            VALUES('$user_id','$name','$about','$start','$end','$url');";
+        $result = mysqli_query($con, $query);
+
+        if ($result) {
+            header("location: profile.php?user_id=$user_id");
+        }
+    }
+
+    public function findUserByLearnerID($learner_id){
+        $db = new Database();
+        $con = $db->connect_db();
+
+        $query = "SELECT 
+                (
+                    SELECT user.first_name
+                    FROM user
+                    WHERE user.id = learner_profile.user_id
+                ) AS first_name,
+                (
+                    SELECT user.last_name
+                    FROM user
+                    WHERE user.id = learner_profile.user_id
+                )AS last_name,
+                (
+                    SELECT user.email
+                    FROM user
+                    WHERE user.id = learner_profile.user_id
+                )AS email
+                FROM `learner_profile` 
+                WHERE id = '$learner_id'";
+
+
+        $result = mysqli_query($con, $query);
+
+        if (mysqli_num_rows($result) == 1) {
+            $row = mysqli_fetch_array($result);
+            // $ins_id = $row['id'];
+            return $row;
+        } else {
+            return false;
         }
     }
 }

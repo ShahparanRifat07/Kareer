@@ -103,13 +103,20 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                         ?>
                     </ul>
                 </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="ranking.php">Ranking</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="all_jobs.php"><span><i class="fa-solid fa-briefcase"></i> Jobs</a>
+                </li>
             </ul>
             <div class="col-md-8 ms-3">
-                <form class="d-flex input-group w-auto my-auto ">
-                    <input autocomplete="off" type="search" class="form-control rounded" placeholder="Search" aria-describedby="search-addon" />
-                    <span class="input-group-text border-0" id="search-addon">
+                <form method="GET" action="search.php" class="d-flex input-group w-auto my-auto ">
+                    <input name="search" autocomplete="off" type="search" class="form-control rounded" placeholder="Search" aria-describedby="search-addon" />
+                    <button type= submit class="input-group-text border-0" id="search-addon">
                         <i class="fas fa-search"></i>
-                    </span>
+                    </button>
                 </form>
             </div>
         </div>
@@ -194,7 +201,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                 <!-- Avatar -->
                 <div class="dropdown">
                     <a class="dropdown-toggle d-flex align-items-center hidden-arrow" href="#" id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                        <img src="<?php echo $profile_pic ?>" class="rounded-circle" height="25" alt="Profile Pic" loading="lazy" />
+                        <img src="<?php echo $profile_pic ?>" class="rounded-circle" height="25" width="25" alt="Profile Pic" loading="lazy" />
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
 
@@ -205,7 +212,7 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
                             </div>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">My Courses</a>
+                            <a class="dropdown-item" href="my_courses.php">My Courses</a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">Wishlist</a>
@@ -254,14 +261,18 @@ if (isset($_SESSION['LOGGEDIN']) && isset($_SESSION['USERID'])) {
 
 
                         <li>
-                            <a class="dropdown-item" href="#">Public Profile</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Edit Profile</a>
+                            <a class="dropdown-item" href="profile.php?user_id=<?php echo $id ?>">Public Profile</a>
                         </li>
                         <hr>
                         <li>
-                            <a class="dropdown-item" href="#">Purchase history</a>
+                            <a class="dropdown-item" href="applied_jobs.php">Applied Jobs</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="job_calls.php">Calls</a>
+                        </li>
+                        <hr>
+                        <li>
+                            <a class="dropdown-item" href="purchase_history.php">Purchase history</a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">Settings</a>

@@ -3,6 +3,7 @@
 require_once("models/database.php");
 require_once("models/user.php");
 require_once("models/employer.php");
+require_once("models/job.php");
 
 session_start();
 
@@ -15,6 +16,7 @@ $con = $db->connect_db();
 $user_id = $_SESSION['USERID'];
 
 $emp = new Employer();
+$job = new Job();
 
 if (($emp->checkIsEmployer($user_id)) != true) {
     header("location: no_access.php");
@@ -22,6 +24,7 @@ if (($emp->checkIsEmployer($user_id)) != true) {
 
 $employer = $emp->findEmployerByUserID($user_id);
 
+$employe_id = $employer['id'];
 $company_name = $employer['company_name'];
 $description = $employer['description'];
 $picture = $employer['picture'];
@@ -84,9 +87,8 @@ $industry_name = $employer['industry_name'];
                     <h4><?php echo $company_name ?></h4>
                     <p><strong><?php echo $industry_name ?></strong></p>
                     <p><?php echo $description ?></p>
-                    
-                    <a href="" class="btn btn-dark">View Profile</a>
-                    <a href="" class="btn btn-dark">Edit Profile</a>
+
+                    <!-- <a href="" class="btn btn-dark btn-rounded">Follow</a> -->
                 </div>
             </div>
         </div>
@@ -99,17 +101,17 @@ $industry_name = $employer['industry_name'];
                         <h3>Ananlytics</h3>
                         <hr>
                         <div>
-                            <h4>30</h4>
+                            <h4><?php echo $emp->findTotalJobPost($employe_id) ?></h4>
                             <p>job posts</p>
                         </div>
                         <hr>
                         <div>
-                            <h4>1200</h4>
+                            <h4><?php echo $emp->findTotalJobApplicants($employe_id)?></h4>
                             <p>Total Applicants</p>
                         </div>
                         <hr>
                         <div>
-                            <h4>750</h4>
+                            <h4>0</h4>
                             <p>Followers</p>
                         </div>
                     </div>
@@ -118,80 +120,54 @@ $industry_name = $employer['industry_name'];
 
                 <div class="col-md-9">
                     <div class="card mt-4 mb-4">
-                        <a href="" class="btn btn-dark">Create a job post</a>
+                        <a href="create_job.php" class="btn btn-dark">Create a job post</a>
                     </div>
 
                     <div class="card mt-2 mb-2 customCard">
-                        <div class="card">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <div class="card marginCard">
-                                        <img src="https://play-lh.googleusercontent.com/1cqAnD-lDTtohKEUE_oJ6hTubEwiXLKTjV8WCf6SJJA73d05qnvJ_HXeBvs3nQQZHj0" alt="" height="130px">
+
+                        <?php
+
+                        $query = "SELECT * FROM job WHERE employe_id = '$employe_id'";
+                        $result = mysqli_query($con, $query);
+                        if (mysqli_num_rows($result) > 0) {
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                $location = $job->findLocationById($row['location']);
+                                $type = $job->findJobTypeById($row['type']);
+
+                        ?>
+
+                                <div class="card">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="card marginCard">
+                                                <img src="<?php echo $picture ?>" alt="" height="130px">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <a href="job_details.php?job_id=<?php echo $row['id'] ?>" class="text-dark">
+                                                <h5><?php echo $row['title'] ?></h5>
+                                            </a>
+                                            <a href="<?php echo $employe_id ?>" class="text-dark">
+                                                <p><?php echo $company_name ?></p>
+                                            </a>
+                                            <p><?php echo $location['location'] ?> (<?php echo $type['type'] ?>)</p>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href="show_job_applicants.php?job_id=<?php echo $row['id'] ?>" class="btn btn-dark btn-sm">view job Applicants</a>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-7">
-                                    <a href="" class="text-dark">
-                                        <h5>Software Engineering Internship 2022</h5>
-                                    </a>
-                                    <a href="" class="text-dark">
-                                        <p>Cobblestone Energy</p>
-                                    </a>
-                                    <p>Dhaka, Dhaka, Bangladesh (On-site)</p>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="" class="btn btn-dark btn-sm">view job Applicants</a>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
+                                <hr>
 
-                        <div class="card">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <div class="card marginCard">
-                                        <img src="https://play-lh.googleusercontent.com/1cqAnD-lDTtohKEUE_oJ6hTubEwiXLKTjV8WCf6SJJA73d05qnvJ_HXeBvs3nQQZHj0" alt="" height="130px">
-                                    </div>
-                                </div>
-                                <div class="col-md-7">
-                                    <a href="" class="text-dark">
-                                        <h5>Software Engineering Internship 2022</h5>
-                                    </a>
-                                    <a href="" class="text-dark">
-                                        <p>Cobblestone Energy</p>
-                                    </a>
-                                    <p>Dhaka, Dhaka, Bangladesh (On-site)</p>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="" class="btn btn-dark btn-sm">view job Applicants</a>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
+                            <?php
+                            }
+                        } else {
+                            ?>
+                            <h3>No Job Posts</h3>
+                        <?php
+                        }
 
-
-                        <div class="card">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <div class="card marginCard">
-                                        <img src="https://play-lh.googleusercontent.com/1cqAnD-lDTtohKEUE_oJ6hTubEwiXLKTjV8WCf6SJJA73d05qnvJ_HXeBvs3nQQZHj0" alt="" height="130px">
-                                    </div>
-                                </div>
-                                <div class="col-md-7">
-                                    <a href="" class="text-dark">
-                                        <h5>Software Engineering Internship 2022</h5>
-                                    </a>
-                                    <a href="" class="text-dark">
-                                        <p>Cobblestone Energy</p>
-                                    </a>
-                                    <p>Dhaka, Dhaka, Bangladesh (On-site)</p>
-                                </div>
-                                <div class="col-md-3">
-                                    <a href="" class="btn btn-dark btn-sm">view job Applicants</a>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
-
+                        ?>
 
                     </div>
                 </div>

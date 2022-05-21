@@ -196,7 +196,19 @@ if ($is_brought == true || $is_admin == true || $is_course_by_instructor == true
                         <div class="mt-3">
                             <h3><?php echo $row['name'] ?></h3>
                             <p><?php echo $row['description'] ?></p>
-                            <a class="btn btn-dark" href="">Mark as complete</a>
+                            <?php
+                            if ($is_brought == true) {
+                                if ($course->checkIfContentComplete($content_id, $user_id) == false) {
+                            ?>
+                                    <a class="btn btn-dark" href="complete_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row['id'] ?>&user_id=<?php echo $user_id ?>">Mark as complete</a>
+                                <?php
+                                } else {
+                                ?>
+                                    <button class="btn bg-dark" disabled>Completed</button>
+                            <?php
+                                }
+                            }
+                            ?>
                         </div>
                     </div>
                 <?php

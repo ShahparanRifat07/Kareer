@@ -25,11 +25,13 @@ if (isset($_GET['id'])) {
 $us = new User();
 $user = $us->findUserByUserId($id);
 $learner = new Learner();
+$learner_object = $learner->findLearnerByUserID($id);
+$learner_id = $learner_object['id'];
 $cor = new Course();
 $course = "";
-if($cor->findCourseById($course_id)!==null){
+if ($cor->findCourseById($course_id) !== null) {
     $course = $cor->findCourseById($course_id);
-}else{
+} else {
     header("location: 404.php");
 }
 $cor->insertCourseView($course['id']);
@@ -46,6 +48,10 @@ $is_submitted = $course['is_submitted'];
 $is_approved = $course['is_approved'];
 $status = $cor->findStatus($course);
 $picture = $course['picture'];
+$point_needed = $course['point_needed'];
+$total_point = $cor->findCurrentCoursePoint($course_id);
+
+// $current_course_point = 
 
 $course_instructor_id = $course['instructor_id'];
 $ins = new Instructor();
@@ -149,8 +155,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <div id="headCard" class="card">
             <div>
-                <h3><?php echo $course['title']  ?></h3>
-
+                <h3><?php echo $course['title']  ?> ( <i class="fa-solid fa-star"></i><?php echo $total_point  ?>)</h3>
+                <?php
+                if ($is_bought == true) {
+                ?>
+                    <h6>Point completed: <i class="fa-solid fa-star"></i><?php echo $cor->findHowManyPointsCompleted($course['id'], $learner_id) ?></h6>
+                <?php
+                }
+                ?>
             </div>
             <hr>
 
@@ -164,6 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <p><strong>Created Time:</strong> <?php echo $year ?></p>
                     <p><strong>Active:</strong> <?php echo $active ?></p>
                     <p><strong>Status:</strong> <?php echo $status ?></p>
+                    <p><strong>Total Point Needed:</strong> <i class="fa-solid fa-star"></i> <?php echo $point_needed ?></p>
                 </div>
                 <div class="col-md-3">
                     <div class="card">
@@ -247,39 +260,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     } elseif ($us->checkIFAdmin($id) != true && $course_instructor_id != $instructor_id && $is_bought != true) {
                     ?>
                         <a id=addSection2 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">Add to wishlist</a>
-                        <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">Buy course</a>
+                        <a id=addSection3 href="course_checkout.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">Buy course</a>
                     <?php
                     } elseif ($is_bought == true) {
                     ?>
                         <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View Course Discussion</a>
-                        <div>
 
-                            <form method="POST" action="" class="modal-rating">
-                                <div class="overlay"></div>
+                        <?php
+                        if ($cor->checkIfCourseRatedByTheLearner($course_id, $learner_id) == false) {
+                        ?>
+                            <div>
+                                <form method="POST" action="course_rating.php?course_id=<?php echo $course_id ?>&learner_id=<?php echo $learner_id?>" class="modal-rating">
+                                    <div class="overlay"></div>
 
-                                <h2>Rate this course</h2>
+                                    <h2>Rate this course</h2>
 
-                                <div class="rating">
-                                    <input type="radio" name="rate" id="rate-1" value="1" required>
-                                    <label for="rate-1">1</label>
+                                    <div class="rating">
+                                        <input type="radio" name="rate" id="rate-1" value="1" required>
+                                        <label for="rate-1">1</label>
 
-                                    <input type="radio" name="rate" id="rate-2" value="2" required>
-                                    <label for="rate-2">2</label>
+                                        <input type="radio" name="rate" id="rate-2" value="2" required>
+                                        <label for="rate-2">2</label>
 
-                                    <input type="radio" name="rate" id="rate-3" value="3" required>
-                                    <label for="rate-3">3</label>
+                                        <input type="radio" name="rate" id="rate-3" value="3" required>
+                                        <label for="rate-3">3</label>
 
-                                    <input type="radio" name="rate" id="rate-4" value="4" required>
-                                    <label for="rate-4">4</label>
+                                        <input type="radio" name="rate" id="rate-4" value="4" required>
+                                        <label for="rate-4">4</label>
 
-                                    <input type="radio" name="rate" id="rate-5" value="5" required>
-                                    <label for="rate-5">5</label>
+                                        <input type="radio" name="rate" id="rate-5" value="5" required>
+                                        <label for="rate-5">5</label>
 
-                                </div>
-                                <button type="submit">Submit</button>
-                            </form>
+                                    </div>
+                                    <button type="submit">Submit</button>
+                                </form>
+                            </div>
+                        <?php
+                        } else {
+                            $check_rate_given = $cor->checkIfCourseRatedByTheLearner($course_id, $learner_id);
+                            $rating = $check_rate_given['rating'];
+                        ?>
+                            <div class=" mt-2 ms-auto me-auto">
+                                <p class="ms-auto me-auto">You gave <?php echo $rating ?><i class="fa-solid fa-star"></i> to this course </p>
+                            </div>
+                        <?php
+                        }
+                        ?>
 
-                        </div>
                     <?php
                     }
                     ?>
@@ -329,20 +356,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                                         ?>
                                                     <li class="list-group-item ">
-                                                        <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?> <span class="text-warning">(<?php echo $row3['point'] ?>)</span></a>
+                                                        <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?> <span class="text-warning">( <i class="fa-solid fa-star"></i> <?php echo $row3['point'] ?>)</span></a>
                                                     </li>
                                                     <?php
                                                 } else {
                                                     if ($row3['is_preview'] == true) {
                                                     ?>
                                                         <li class="list-group-item ">
-                                                            <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?> <span class="text-warning">(<?php echo $row3['point'] ?>)</span></a>
+                                                            <a href="course_content.php?course_id=<?php echo $course_id ?>&section_id=<?php echo $row['id'] ?>&content_id=<?php echo $row3['id'] ?>"><?php echo $row3['name'] ?> <span class="text-warning">( <i class="fa-solid fa-star"></i> <?php echo $row3['point'] ?>)</span></a>
                                                         </li>
                                                     <?php
                                                     } else {
                                                     ?>
                                                         <li class="list-group-item">
-                                                            <span><?php echo $row3['name'] ?> <span class="text-warning">(<?php echo $row3['point'] ?>)</span></span>
+                                                            <span><?php echo $row3['name'] ?> <span class="text-warning">( <i class="fa-solid fa-star"></i> <?php echo $row3['point'] ?>)</span></span>
                                                         </li>
                                                     <?php
                                                     }

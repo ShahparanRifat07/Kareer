@@ -1,6 +1,5 @@
 <?php
 
-
 require_once("models/database.php");
 require_once("models/user.php");
 require_once("models/learnerProflie.php");
@@ -24,15 +23,16 @@ $cor = new Course();
 $job = new Job();
 $learner = new Learner();
 
-$category_id = "";
-if (isset($_GET['category_id'])) {
-    $category_id = $_GET['category_id'];
+$search_word = "";
+if (isset($_GET['search']) && !empty($_GET['search'])) {
+    $search_word = $_GET['search'];
 } else {
     header("location: index.php");
 }
 
-$cat = new Category();
-$category = $cat->findCategoryById($category_id);
+
+
+
 
 
 ?>
@@ -90,7 +90,7 @@ $category = $cat->findCategoryById($category_id);
     <section id="sec1">
         <div class="container">
             <div class="card noBorderRedius bg-dark mt-3 mb-2">
-                <h1 class="text-light "> <?php echo $category['name']?></h1>
+                <h1 class="text-light "> Showing results for <span class="text-warning"><?php echo $search_word ?></span> </h1>
             </div>
         </div>
     </section>
@@ -106,14 +106,17 @@ $category = $cat->findCategoryById($category_id);
                     <?php
 
                     $query = "SELECT course.id,instructor_id,title,price,picture,user.first_name,user.last_name
-                                FROM course
-                                JOIN category
-                                ON course.category_id = category.id
-                                JOIN instructor_profile
-                                ON course.instructor_id = instructor_profile.id
-                                JOIN user
-                                ON instructor_profile.user_id = user.id
-                                WHERE category.id = '$category_id'";
+                                    FROM course
+                                    JOIN category
+                                    ON course.category_id = category.id
+                                    JOIN instructor_profile
+                                    ON course.instructor_id = instructor_profile.id
+                                    JOIN user
+                                    ON instructor_profile.user_id = user.id
+                                    WHERE course.title LIKE '%" . $search_word . "%' 
+                                    OR course.description LIKE '%" . $search_word . "%'
+                                    OR category.name LIKE '%" . $search_word . "%'
+                                    OR category.description LIKE '%" . $search_word . "%'";
 
                     $result = mysqli_query($con, $query);
                     if (mysqli_num_rows($result) > 0) {
@@ -164,6 +167,68 @@ $category = $cat->findCategoryById($category_id);
             </div>
         </div>
     </section>
+
+
+    <section id="sec3" class="mt-5">
+        <div class="container">
+            <h2>Job Posts</h2>
+            <hr>
+
+            <?php
+
+            $query = "SELECT job.id,job.title,job.created_time,emp.company_name,job_type.type,location.location,emp.picture
+                        FROM job
+                        JOIN employer_profile AS emp
+                        ON job.employe_id = emp.id
+                        JOIN job_type
+                        ON job.type = job_type.id
+                        JOIN location
+                        ON job.location = location.id
+                        WHERE job.title LIKE '%" . $search_word . "%' 
+                        OR job.description LIKE '%" . $search_word . "%'
+                        OR location.location LIKE '%" . $search_word . "%'
+                        OR job_type.type LIKE '%" . $search_word . "%'
+                        ORDER BY job.created_time DESC";
+
+            $result = mysqli_query($con, $query);
+
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $time_ago = $job->time_elapsed_string($row['created_time']);
+
+            ?>
+                    <div class="card ms-4 me-4 mt-3 mb-3 noBorderRedius">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card noBorderRedius noMarginPadding">
+                                    <img src="<?php echo $row['picture'] ?>" alt="" height="200px">
+                                </div>
+                            </div>
+                            <div class="col-md-9 mt-2">
+                                <a href="job_details.php?job_id=<?php echo $row['id'] ?>">
+                                    <h2><?php echo $row['title'] ?></h2>
+                                </a>
+                                <p><?php echo $row['company_name'] ?></p>
+                                <p><?php echo $row['location'] ?> <span> - (<?php echo $row['type'] ?></span>) </p>
+                                <p><?php echo $time_ago ?> (1 applicant)</p>
+                            </div>
+                        </div>
+                    </div>
+
+            <?php
+                }
+            }else {
+                ?>
+                <div class="card noBorderRedius mb-3">
+                    <h5>No Job Post Found</h5>
+                </div>
+            <?php
+            }
+            ?>
+        </div>
+    </section>
+
+
 
     <?php include "utility/footer.php" ?>
     <!-- MDB -->
