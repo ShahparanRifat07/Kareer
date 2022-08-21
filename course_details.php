@@ -242,8 +242,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                             </div>
                         </div>
-                        <a id=addSection2 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View all students</a>
-                        <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View Course Aanalytics</a>
+                        <a id=addSection2 href="view_all_course_student.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View all students</a>
+                        <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View Course Analytics</a>
                         <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View Course Discussion</a>
                         <?php
                         if ($is_submitted == 0 && $is_approved == 0) {
@@ -254,7 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     } elseif ($us->checkIFAdmin($id) == true) {
                         ?>
                         <a id=addSection2 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View all students</a>
-                        <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View Course Aanalytics</a>
+                        <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View Course Agit nalytics</a>
                         <a id=addSection3 href="add_assignment.php?course_id=<?php echo $course_id ?>" class="btn btn-dark" type="button">View Course Discussion</a>
                     <?php
                     } elseif ($us->checkIFAdmin($id) != true && $course_instructor_id != $instructor_id && $is_bought != true) {
